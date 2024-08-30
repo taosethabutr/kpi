@@ -1,0 +1,3236 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DCEO Office KPI Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+        <style>
+            #password-form {
+                text-align: center;
+            }
+            #password {
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            #content {
+                display: none;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f8f8f8;
+            }
+            .dashboard {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 10px;
+                width: 1050px;
+                padding: 10px;
+            }
+            .kpi-card {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                position: relative;
+                width: 300px;
+                transition-duration: 0.5s;
+            }
+            .kpi-card:hover{
+                background-color: #FFFFEB;
+            }
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+            }
+            .card-header-right {
+                display: flex;
+                align-items: center;
+                width: 80px;
+                font-size: 12px;
+                color: #666;
+                font-weight: bold;
+            }
+            h2 {
+                margin-bottom: 0;
+                color: #333;
+            }
+            h1 {
+                color: #F0003F;
+                weight: bolder;
+                font-size: 48px;
+            }
+            h3 {
+                width: 200px;
+                margin: 0;
+                font-size: 16px;
+                color: #333;
+            }
+            .indicator {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 2px;
+            }
+            .green { background-color: #6FCDCD; }
+            .yellow { background-color: #FFD778; }
+            .red { background-color: #FF829D; }
+            .grey { background-color: #9E9E9E; }
+            .value {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                margin: 10px 0 20px 0;
+            }
+            .month {
+                font-size: 12px;
+                color: #666;
+            }
+            .target {
+                display: block;
+                font-size: 12px;
+                color: #666;
+            }
+            .details {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            .detail-item {
+                display: flex;
+                flex-direction: column;
+                font-size: 12px;
+                color: #666;
+            }
+            .detail-value {
+                font-weight: bold;
+                color: #333;
+            }
+            .revchart {
+                width: 300px !important;
+                height: 150px !important;
+            }
+            .chart {
+                width: 300px !important;
+                height: 150px !important;
+            }
+            .table-screen {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 10px;
+                padding: 10px;
+                width: 1050px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                margin: 20px 0;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            caption {
+                caption-side: top;
+                font-size: 1.5em;
+                font-weight: bold;
+                color: #333;
+            }
+            th, td {
+                padding: 3px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                text-align: center;
+            }
+            td div {
+                display: inline-block;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            tr:nth-child(odd) {
+                background-color: #ffffff;
+            }
+            th {
+                background-color: #333;
+                color: white;
+            }
+            .subscribers-container {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                position: relative;
+            }
+            .subscribers-chart {
+                width: 100%;
+                height: 200px;
+                margin: 10px 0 10px 0;
+            }
+            .dataframe{
+                font-size: 0.6em;
+                margin: 0;
+                border-radius: 5px;
+            }
+            .dataframe th{
+                background-color: #ddd;
+                color: #333;
+                border: 1px solid #ddd;
+            }
+            .dataframe td {
+                border: 1px solid #ddd;
+                text-align: right;
+            }
+            nav {
+                background-color: #fff;
+                padding: 10px 0;
+                border-radius: 20px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                width: 1050px;
+            }
+            nav ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+            }
+            nav li {
+                display: inline;
+                margin: 0 15px;
+                padding: 5px;
+                border-radius: 20px;
+                background-color: #f8f8f8;
+                transition-duration: 0.5s;
+            }
+            nav li:hover {
+                background-color: #F0003F;
+                color: #fff;
+            }
+            nav a {
+                text-decoration: none;
+                color: #666;
+                font-weight: bold;
+            }
+            nav a:hover {
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="password-form">
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        <div id="content">
+            <nav>
+                <ul>
+                    <a href="#link-overview"><li>Metrics Overview</li></a>
+                    <a href="#link-revenue"><li>Revenue</li></a>
+                    <a href="#link-subscribers"><li>Subscribers</li></a>
+                    <a href="#link-mbnw"><li>Mobile Network</li></a>
+                    <a href="#link-bbnw"><li>Broadband Network</li></a>
+                    <a href="#link-touchpoint"><li>Customer Touchpoints</li></a>
+                </ul>
+            </nav>
+            <h1 id="link-overview">Metrics Overview</h1>
+            <div class="table-screen">
+                
+        <table>
+            <caption>B2C Service Revenue</caption>
+            <thead>
+                <tr>
+                    <th>KPI</th>
+                    <th>MoM Trend</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>Postpaid Revenue</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Prepaid Revenue</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>TOL Revenue</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>TVS Rental & CMDU Revenue</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>TVS Now Revenue</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+        </tr>
+        
+            </tbody>
+        </table>
+    
+        <table>
+            <caption>Mobile Network</caption>
+            <thead>
+                <tr>
+                    <th>KPI</th>
+                    <th>MoM Trend</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>Problematic Cell 4G</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Black Cell 4G</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Application Experience Index</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Network NPS</td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Network & Usage Complaint</td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Repeated Complaint</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Customer Minute Loss</td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+        </tr>
+        
+            </tbody>
+        </table>
+    
+        <table>
+            <caption>Broadband Network</caption>
+            <thead>
+                <tr>
+                    <th>KPI</th>
+                    <th>MoM Trend</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>% Poor Online Network Experience</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Network & Usage Complaint</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Repeated Complaint</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Customer Minute Loss</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>On-time Installation (%)</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Installation Gap (%)</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>24Hrs Fixed by Preferred Date (%)</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+            </tbody>
+        </table>
+    
+        <table>
+            <caption>Touchpoints & Digital Apps</caption>
+            <thead>
+                <tr>
+                    <th>KPI</th>
+                    <th>MoM Trend</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>Call Center CSAT (Top2Boxes)</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>True Branded Shop CSAT (Top2Boxes)</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Dtac Branded Shop CSAT (Top2Boxes)</td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>DTAC App MAU</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>True iService MAU</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>TrueID App Registered MAU</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator yellow"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>TrueX App MAU</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+        </tr>
+        
+        <tr>
+            <td>Mordee App MAU</td>
+            <td style="text-align: center;"><div class="indicator green"> </div></td>
+            <td style="text-align: center;"><div class="indicator red"> </div></td>
+        </tr>
+        
+            </tbody>
+        </table>
+    
+            </div>
+            <h1 id="link-revenue">B2C Revenue Overview</h1>
+            <div class="dashboard" style="width:1050px">
+                
+            <div class="kpi-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Postpaid Revenue</h3>
+                        <small style="color: #666">Mn THB</small>
+                    </div>
+                    <div>
+                        <div class="card-header-right">
+                            <div class="indicator yellow"> </div>
+                            <div> Ach 99%</div>
+                        </div>
+                        <div class="card-header-right">
+                            <div class="indicator yellow"> </div>
+                            <div> MoM +0.0%</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="revchart" id="Postpaid-revenue"></canvas>
+                <div class="data-table">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Month</th>
+      <th>Mar-24</th>
+      <th>Apr-24</th>
+      <th>May-24</th>
+      <th>Jun-24</th>
+      <th>Jul-24</th>
+      <th>Aug-24</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Actual</th>
+      <td>5.95K</td>
+      <td>5.98K</td>
+      <td>5.95K</td>
+      <td>5.94K</td>
+      <td>5.90K</td>
+      <td>5.90K</td>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <td>6.07K</td>
+      <td>5.98K</td>
+      <td>5.98K</td>
+      <td>6.01K</td>
+      <td>5.96K</td>
+      <td>5.96K</td>
+    </tr>
+    <tr>
+      <th>Gap</th>
+      <td>-127</td>
+      <td>-1</td>
+      <td>-31</td>
+      <td>-71</td>
+      <td>-54</td>
+      <td>-55</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="kpi-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Prepaid Revenue</h3>
+                        <small style="color: #666">Mn THB</small>
+                    </div>
+                    <div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> Ach 100%</div>
+                        </div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> MoM +0.7%</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="revchart" id="Prepaid-revenue"></canvas>
+                <div class="data-table">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Month</th>
+      <th>Mar-24</th>
+      <th>Apr-24</th>
+      <th>May-24</th>
+      <th>Jun-24</th>
+      <th>Jul-24</th>
+      <th>Aug-24</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Actual</th>
+      <td>3.92K</td>
+      <td>3.94K</td>
+      <td>4.02K</td>
+      <td>3.91K</td>
+      <td>4.03K</td>
+      <td>4.06K</td>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <td>3.88K</td>
+      <td>3.94K</td>
+      <td>4.06K</td>
+      <td>3.95K</td>
+      <td>4.06K</td>
+      <td>4.06K</td>
+    </tr>
+    <tr>
+      <th>Gap</th>
+      <td>40</td>
+      <td>0</td>
+      <td>-38</td>
+      <td>-43</td>
+      <td>-28</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="kpi-card">
+                <div class="card-header">
+                    <div>
+                        <h3>TOL Revenue</h3>
+                        <small style="color: #666">Mn THB</small>
+                    </div>
+                    <div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> Ach 100%</div>
+                        </div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> MoM +0.5%</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="revchart" id="TOL-revenue"></canvas>
+                <div class="data-table">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Month</th>
+      <th>Mar-24</th>
+      <th>Apr-24</th>
+      <th>May-24</th>
+      <th>Jun-24</th>
+      <th>Jul-24</th>
+      <th>Aug-24</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Actual</th>
+      <td>1.52K</td>
+      <td>1.51K</td>
+      <td>1.53K</td>
+      <td>1.53K</td>
+      <td>1.54K</td>
+      <td>1.55K</td>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <td>1.50K</td>
+      <td>1.51K</td>
+      <td>1.52K</td>
+      <td>1.53K</td>
+      <td>1.54K</td>
+      <td>1.56K</td>
+    </tr>
+    <tr>
+      <th>Gap</th>
+      <td>18.40</td>
+      <td>-1.10</td>
+      <td>4.80</td>
+      <td>2</td>
+      <td>0.20</td>
+      <td>-5.90</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="kpi-card">
+                <div class="card-header">
+                    <div>
+                        <h3>TVS Rental & CMDU Revenue</h3>
+                        <small style="color: #666">Mn THB</small>
+                    </div>
+                    <div>
+                        <div class="card-header-right">
+                            <div class="indicator yellow"> </div>
+                            <div> Ach 99%</div>
+                        </div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> MoM +2.3%</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="revchart" id="TVS Rental & CMDU-revenue"></canvas>
+                <div class="data-table">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Month</th>
+      <th>Mar-24</th>
+      <th>Apr-24</th>
+      <th>May-24</th>
+      <th>Jun-24</th>
+      <th>Jul-24</th>
+      <th>Aug-24</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Actual</th>
+      <td>376</td>
+      <td>377</td>
+      <td>373</td>
+      <td>362</td>
+      <td>349.84</td>
+      <td>358</td>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <td>385</td>
+      <td>379</td>
+      <td>379</td>
+      <td>379</td>
+      <td>359</td>
+      <td>360.54</td>
+    </tr>
+    <tr>
+      <th>Gap</th>
+      <td>-9</td>
+      <td>-2</td>
+      <td>-6</td>
+      <td>-17</td>
+      <td>-9.16</td>
+      <td>-2.54</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="kpi-card">
+                <div class="card-header">
+                    <div>
+                        <h3>TVS Now Revenue</h3>
+                        <small style="color: #666">Mn THB</small>
+                    </div>
+                    <div>
+                        <div class="card-header-right">
+                            <div class="indicator red"> </div>
+                            <div> Ach 23%</div>
+                        </div>
+                        <div class="card-header-right">
+                            <div class="indicator green"> </div>
+                            <div> MoM +900.0%</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="revchart" id="TVS Now-revenue"></canvas>
+                <div class="data-table">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Month</th>
+      <th>Jul-24</th>
+      <th>Aug-24</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Actual</th>
+      <td>0.50</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>Target</th>
+      <td>2</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>Gap</th>
+      <td>-1.50</td>
+      <td>-17</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+    <script>
+        Chart.register(ChartDataLabels)
+    
+        new Chart(document.getElementById('Postpaid-revenue'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [5946.0, 5981.0, 5949.0, 5939.0, 5902.0, 5903.0],
+                        backgroundColor: '#DD1B24',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Target',
+                        data: [6073.0, 5982.0, 5980.0, 6010.0, 5956.0, 5958.0],
+                        type: 'line',
+                        borderWidth: 2,
+                        borderColor: 'rgba(77, 77, 77, 0.6)',
+                        backgroundColor: 'rgba(77, 77, 77, 0.2)',
+                        pointRadius: 1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        min: 5606.9,
+                        max: 6376.650000000001,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 0) {
+                                return ['5.95K', '5.98K', '5.95K', '5.94K', '5.90K', '5.90K'][context.dataIndex];
+                            } else {
+                                return ['', '', '', '', '', ''][context.dataIndex];
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        
+        new Chart(document.getElementById('Prepaid-revenue'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [3923.0, 3935.0, 4020.0, 3907.0, 4034.0, 4064.0],
+                        backgroundColor: '#FAAB42',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Target',
+                        data: [3883.0, 3935.0, 4058.0, 3950.0, 4062.0, 4064.0],
+                        type: 'line',
+                        borderWidth: 2,
+                        borderColor: 'rgba(77, 77, 77, 0.6)',
+                        backgroundColor: 'rgba(77, 77, 77, 0.2)',
+                        pointRadius: 1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        min: 3688.85,
+                        max: 4267.2,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 0) {
+                                return ['3.92K', '3.94K', '4.02K', '3.91K', '4.03K', '4.06K'][context.dataIndex];
+                            } else {
+                                return ['', '', '', '', '', ''][context.dataIndex];
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        
+        new Chart(document.getElementById('TOL-revenue'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [1520.3, 1512.2, 1528.1, 1534.0, 1544.6, 1552.2],
+                        backgroundColor: '#0094FA',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Target',
+                        data: [1501.9, 1513.3, 1523.3, 1532.0, 1544.4, 1558.1],
+                        type: 'line',
+                        borderWidth: 2,
+                        borderColor: 'rgba(77, 77, 77, 0.6)',
+                        backgroundColor: 'rgba(77, 77, 77, 0.2)',
+                        pointRadius: 1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        min: 1426.805,
+                        max: 1636.0049999999999,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 0) {
+                                return ['1.52K', '1.51K', '1.53K', '1.53K', '1.54K', '1.55K'][context.dataIndex];
+                            } else {
+                                return ['', '', '', '', '', ''][context.dataIndex];
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        
+        new Chart(document.getElementById('TVS Rental & CMDU-revenue'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [376.0, 377.0, 373.0, 362.0, 349.84, 358.0],
+                        backgroundColor: '#E31D93',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Target',
+                        data: [385.0, 379.0, 379.0, 379.0, 359.0, 360.54],
+                        type: 'line',
+                        borderWidth: 2,
+                        borderColor: 'rgba(77, 77, 77, 0.6)',
+                        backgroundColor: 'rgba(77, 77, 77, 0.2)',
+                        pointRadius: 1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        min: 332.34799999999996,
+                        max: 404.25,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 0) {
+                                return ['376', '377', '373', '362', '349.84', '358'][context.dataIndex];
+                            } else {
+                                return ['', '', '', '', '', ''][context.dataIndex];
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        
+        new Chart(document.getElementById('TVS Now-revenue'), {
+            type: 'bar',
+            data: {
+                labels: ['Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [0.5, 5.0],
+                        backgroundColor: '#E31D93',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Target',
+                        data: [2.0, 22.0],
+                        type: 'line',
+                        borderWidth: 2,
+                        borderColor: 'rgba(77, 77, 77, 0.6)',
+                        backgroundColor: 'rgba(77, 77, 77, 0.2)',
+                        pointRadius: 1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        min: 0.475,
+                        max: 23.1,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 0) {
+                                return ['0.50', '5'][context.dataIndex];
+                            } else {
+                                return ['', ''][context.dataIndex];
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        </script>
+            </div>
+            <h1 id="link-subscribers">Subscribers Overview</h1>
+            <div class="dashboard" style="width:1400px">
+                
+    <div class="subscribers-container">
+        <h3 style="display: block; width: 100%; text-align: center;">Postpaid Subscribers</h3>
+        
+        <div class="subscribers-chart">
+            <canvas id="Postpaid-mks"></canvas>
+        </div>
+        
+        <div class="subscribers-chart">
+            <canvas id="Postpaid-activesubs"></canvas>
+        </div>
+        <div class="subscribers-chart">
+            <canvas id="Postpaid-gachurn"></canvas>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels)
+        new Chart(document.getElementById('Postpaid-mks'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                        datasets: [
+                            {
+                                label: 'True & Dtac',
+                                data: [58.17, 58.1, 58.43, 58.63, 58.65, 58.62],
+                                backgroundColor: '#FF829D',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'AIS',
+                                data: [41.83, 41.9, 41.57, 41.37, 41.35, 41.38],
+                                backgroundColor: '#6FCDCD',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                display: false,
+                                ticks: {
+                                    display: false
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Postpaid Market Share'
+                            },
+                            tooltip: {
+                                mode: 'index'
+                            }
+                        }
+                    }
+                });
+        
+        new Chart(document.getElementById('Postpaid-activesubs'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Postpaid Active Subs',
+                        data: [14215811.0, 14234374.0, 14227447.0, 14217829.0, 14195482.0, 14182342.0],
+                        backgroundColor: '#DD1B24',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Postpaid Active Subs'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            return ['14.22M', '14.23M', '14.23M', '14.22M', '14.20M', '14.18M'][context.dataIndex];
+                        },
+                        color: '#eee',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('Postpaid-gachurn'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'GA',
+                        data: [244188.0, 241055.0, 247884.0, 227754.0, 222180.0, 184421.0],
+                        backgroundColor: '#6FCDCD',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Churn',
+                        data: [-262299.0, -245660.0, -244866.0, -228839.0, -238020.0, -194219.0],
+                        backgroundColor: '#FF829D',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Postpaid GA & Churn'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        color: '#666',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            const dataIndex = context.dataIndex;
+                            if (datasetIndex === 0) {
+                                return ['244.19K', '241.06K', '247.88K', '227.75K', '222.18K', '184.42K'][dataIndex];
+                            } else {
+                                return ['-262.30K', '-245.66K', '-244.87K', '-228.84K', '-238.02K', '-194.22K'][dataIndex];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <div class="subscribers-container">
+        <h3 style="display: block; width: 100%; text-align: center;">Prepaid Subscribers</h3>
+        
+        <div class="subscribers-chart">
+            <canvas id="Prepaid-mks"></canvas>
+        </div>
+        
+        <div class="subscribers-chart">
+            <canvas id="Prepaid-activesubs"></canvas>
+        </div>
+        <div class="subscribers-chart">
+            <canvas id="Prepaid-gachurn"></canvas>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels)
+        new Chart(document.getElementById('Prepaid-mks'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                        datasets: [
+                            {
+                                label: 'True & Dtac',
+                                data: [52.16, 52.11, 52.06, 52.06, 52.13, 52.07],
+                                backgroundColor: '#FF829D',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'AIS',
+                                data: [47.84, 47.89, 47.94, 47.94, 47.87, 47.93],
+                                backgroundColor: '#6FCDCD',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                display: false,
+                                ticks: {
+                                    display: false
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Prepaid Market Share'
+                            },
+                            tooltip: {
+                                mode: 'index'
+                            }
+                        }
+                    }
+                });
+        
+        new Chart(document.getElementById('Prepaid-activesubs'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'Prepaid Active Subs',
+                        data: [20687420.0, 20771667.0, 20811851.0, 20716766.0, 20690950.0, 20756888.0],
+                        backgroundColor: '#FAAB42',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Prepaid Active Callers'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            return ['20.69M', '20.77M', '20.81M', '20.72M', '20.69M', '20.76M'][context.dataIndex];
+                        },
+                        color: '#eee',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('Prepaid-gachurn'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'GA',
+                        data: [2724127.0, 2606855.0, 2586578.0, 2319051.0, 2478989.0, 2130363.0],
+                        backgroundColor: '#6FCDCD',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Churn',
+                        data: [-3224061.0, -3045247.0, -2757871.0, -2541290.0, -3215749.0, -2332047.0],
+                        backgroundColor: '#FF829D',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Prepaid GA & Churn'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        color: '#666',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            const dataIndex = context.dataIndex;
+                            if (datasetIndex === 0) {
+                                return ['2.72M', '2.61M', '2.59M', '2.32M', '2.48M', '2.13M'][dataIndex];
+                            } else {
+                                return ['-3.22M', '-3.05M', '-2.76M', '-2.54M', '-3.22M', '-2.33M'][dataIndex];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <div class="subscribers-container">
+        <h3 style="display: block; width: 100%; text-align: center;">TOL Subscribers</h3>
+        
+        <div class="subscribers-chart">
+            <canvas id="TOL-mks"></canvas>
+        </div>
+        
+        <div class="subscribers-chart">
+            <canvas id="TOL-activesubs"></canvas>
+        </div>
+        <div class="subscribers-chart">
+            <canvas id="TOL-gachurn"></canvas>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels)
+        new Chart(document.getElementById('TOL-mks'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                        datasets: [
+                            {
+                                label: 'True & Dtac',
+                                data: [36.52, 36.49, 36.52, 36.54, 36.58, 36.58],
+                                backgroundColor: '#FF829D',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'AIS',
+                                data: [46.58, 46.62, 46.61, 46.6, 46.58, 46.58],
+                                backgroundColor: '#6FCDCD',
+                                fill: true,
+                                borderRadius: 5,
+                                borderWidth: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                display: false,
+                                ticks: {
+                                    display: false
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'TOL Market Share'
+                            },
+                            tooltip: {
+                                mode: 'index'
+                            }
+                        }
+                    }
+                });
+        
+        new Chart(document.getElementById('TOL-activesubs'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'TOL Active Subs',
+                        data: [3068649.0, 3067047.0, 3070203.0, 3078391.0, 3094033.0, 3092892.0],
+                        backgroundColor: '#0094FA',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'TOL Active Subs'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            return ['3.07M', '3.07M', '3.07M', '3.08M', '3.09M', '3.09M'][context.dataIndex];
+                        },
+                        color: '#eee',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('TOL-gachurn'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'GA',
+                        data: [45597.0, 42546.0, 47881.0, 50587.0, 50862.0, 45455.0],
+                        backgroundColor: '#6FCDCD',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Churn',
+                        data: [-39743.0, -38455.0, -38397.0, -38045.0, -38878.0, -33211.0],
+                        backgroundColor: '#FF829D',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'TOL GA & Churn'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        color: '#666',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            const dataIndex = context.dataIndex;
+                            if (datasetIndex === 0) {
+                                return ['45.60K', '42.55K', '47.88K', '50.59K', '50.86K', '45.45K'][dataIndex];
+                            } else {
+                                return ['-39.74K', '-38.45K', '-38.40K', '-38.05K', '-38.88K', '-33.21K'][dataIndex];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <div class="subscribers-container">
+        <h3 style="display: block; width: 100%; text-align: center;">TVS Subscribers</h3>
+        
+        <div class="subscribers-chart">
+            <canvas id="TVS-activesubs"></canvas>
+        </div>
+        <div class="subscribers-chart">
+            <canvas id="TVS-gachurn"></canvas>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels)
+        
+        new Chart(document.getElementById('TVS-activesubs'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'TVS Active Subs',
+                        data: [1286110.0, 1274614.0, 1266673.0, 1256625.0, 1246687.0, 1236139.0],
+                        backgroundColor: '#E31D93',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'TVS Active Subs'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            return ['1.29M', '1.27M', '1.27M', '1.26M', '1.25M', '1.24M'][context.dataIndex];
+                        },
+                        color: '#eee',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('TVS-gachurn'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar-24', 'Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24'],
+                datasets: [
+                    {
+                        label: 'GA',
+                        data: [5221.0, 1107.0, 27.0, 22.0, 85.0, 373.0],
+                        backgroundColor: '#6FCDCD',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Churn',
+                        data: [-22135.0, -20819.0, -16541.0, -3610.0, -9003.0, -18737.0],
+                        backgroundColor: '#FF829D',
+                        fill: true,
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'TVS GA & Churn'
+                    },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        color: '#666',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            const dataIndex = context.dataIndex;
+                            if (datasetIndex === 0) {
+                                return ['5.22K', '1.11K', '27', '22', '85', '373'][dataIndex];
+                            } else {
+                                return ['-22.14K', '-20.82K', '-16.54K', '-3.61K', '-9.00K', '-18.74K'][dataIndex];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+            </div>
+            <h2 id="link-modem">TOL Daily Connected Modem</h2>
+            
+            <div class="dashboard" style="width:1050px">
+                <div class="kpi-card" style="width: 900px; height: 450px;">
+                    <h3>Nationwide</h3>
+                    <canvas class="dailychart" id="nationwide-modem"></canvas>
+                </div>
+            </div>
+            <div class="dashboard" style="width:1400px">
+                <div class="kpi-card" style="width: 400px; height: 250px;">
+                    <h3>BMA</h3>
+                    <canvas class="dailychart" id="bma-modem"></canvas>
+                </div>
+                <div class="kpi-card" style="width: 400px; height: 250px;">
+                    <h3>East</h3>
+                    <canvas class="dailychart" id="east-modem"></canvas>
+                </div>
+                <div class="kpi-card" style="width: 400px; height: 250px;">
+                    <h3>UPC</h3>
+                    <canvas class="dailychart" id="upc-modem"></canvas>
+                </div>
+            </div>
+        
+    <script>
+        Chart.register(ChartDataLabels)
+    
+        new Chart(document.getElementById('nationwide-modem'), {
+            type: 'line',
+            data: {
+                labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan', '13 Jan', '14 Jan', '15 Jan', '16 Jan', '17 Jan', '18 Jan', '19 Jan', '20 Jan', '21 Jan', '22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan', '29 Jan', '30 Jan', '31 Jan', '01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb', '08 Feb', '09 Feb', '10 Feb', '11 Feb', '12 Feb', '13 Feb', '14 Feb', '15 Feb', '16 Feb', '17 Feb', '18 Feb', '19 Feb', '20 Feb', '21 Feb', '22 Feb', '23 Feb', '24 Feb', '25 Feb', '26 Feb', '27 Feb', '28 Feb', '29 Feb', '01 Mar', '02 Mar', '03 Mar', '04 Mar', '05 Mar', '06 Mar', '07 Mar', '08 Mar', '09 Mar', '10 Mar', '11 Mar', '12 Mar', '13 Mar', '14 Mar', '15 Mar', '16 Mar', '17 Mar', '18 Mar', '19 Mar', '20 Mar', '21 Mar', '22 Mar', '23 Mar', '24 Mar', '25 Mar', '26 Mar', '27 Mar', '28 Mar', '29 Mar', '30 Mar', '31 Mar', '01 Apr', '02 Apr', '03 Apr', '04 Apr', '05 Apr', '06 Apr', '07 Apr', '08 Apr', '09 Apr', '10 Apr', '11 Apr', '12 Apr', '13 Apr', '14 Apr', '15 Apr', '16 Apr', '17 Apr', '18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr', '25 Apr', '26 Apr', '27 Apr', '28 Apr', '29 Apr', '30 Apr', '01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May', '12 May', '13 May', '14 May', '15 May', '16 May', '17 May', '18 May', '19 May', '20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May', '27 May', '28 May', '29 May', '30 May', '31 May', '01 Jun', '02 Jun', '03 Jun', '04 Jun', '05 Jun', '06 Jun', '07 Jun', '08 Jun', '09 Jun', '10 Jun', '11 Jun', '12 Jun', '13 Jun', '14 Jun', '15 Jun', '16 Jun', '17 Jun', '18 Jun', '19 Jun', '20 Jun', '21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', '26 Jun', '27 Jun', '28 Jun', '29 Jun', '30 Jun', '01 Jul', '02 Jul', '03 Jul', '04 Jul', '05 Jul', '06 Jul', '07 Jul', '08 Jul', '09 Jul', '10 Jul', '11 Jul', '12 Jul', '13 Jul', '14 Jul', '15 Jul', '16 Jul', '17 Jul', '18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul', '29 Jul', '30 Jul', '31 Jul', '01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug', '07 Aug', '08 Aug', '09 Aug', '10 Aug', '11 Aug', '12 Aug', '13 Aug', '14 Aug', '15 Aug', '16 Aug', '17 Aug', '18 Aug', '19 Aug', '20 Aug', '21 Aug', '22 Aug', '23 Aug', '24 Aug', '25 Aug', '26 Aug', '27 Aug', '28 Aug', '29 Aug', '30 Aug', '31 Aug', '01 Sep', '02 Sep', '03 Sep', '04 Sep', '05 Sep', '06 Sep', '07 Sep', '08 Sep', '09 Sep', '10 Sep', '11 Sep', '12 Sep', '13 Sep', '14 Sep', '15 Sep', '16 Sep', '17 Sep', '18 Sep', '19 Sep', '20 Sep', '21 Sep', '22 Sep', '23 Sep', '24 Sep', '25 Sep', '26 Sep', '27 Sep', '28 Sep', '29 Sep', '30 Sep', '01 Oct', '02 Oct', '03 Oct', '04 Oct', '05 Oct', '06 Oct', '07 Oct', '08 Oct', '09 Oct', '10 Oct', '11 Oct', '12 Oct', '13 Oct', '14 Oct', '15 Oct', '16 Oct', '17 Oct', '18 Oct', '19 Oct', '20 Oct', '21 Oct', '22 Oct', '23 Oct', '24 Oct', '25 Oct', '26 Oct', '27 Oct', '28 Oct', '29 Oct', '30 Oct', '31 Oct', '01 Nov', '02 Nov', '03 Nov', '04 Nov', '05 Nov', '06 Nov', '07 Nov', '08 Nov', '09 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov', '15 Nov', '16 Nov', '17 Nov', '18 Nov', '19 Nov', '20 Nov', '21 Nov', '22 Nov', '23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov', '28 Nov', '29 Nov', '30 Nov', '01 Dec', '02 Dec', '03 Dec', '04 Dec', '05 Dec', '06 Dec', '07 Dec', '08 Dec', '09 Dec', '10 Dec', '11 Dec', '12 Dec', '13 Dec', '14 Dec', '15 Dec', '16 Dec', '17 Dec', '18 Dec', '19 Dec', '20 Dec', '21 Dec', '22 Dec', '23 Dec', '24 Dec', '25 Dec', '26 Dec', '27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec'],
+                datasets: [
+                    {
+                        label: '2023',
+                        data: ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 2990037.0, 2988961.0, 2987132.0, 2970882.0, 2954842.0, 2974050.0, 2989088.0, 2989802.0, 2989162.0, 2988806.0, 2979257.0, 2976575.0, 2989431.0, 2989252.0, 2988923.0, 2987709.0, 2987240.0, 2976374.0, 2972831.0, 2986986.0, 2986363.0, 2984858.0, 2984501.0, 2983726.0, 2972564.0, 2969360.0, 2984178.0, 2985234.0, 2982762.0, 2982558.0, 2980097.0, 2969562.0, 2964406.0, 2976324.0, 2977521.0, 2976713.0, 2972005.0, 2968278.0, 2956862.0, 2946818.0, 2950901.0, 2943283.0, 2926990.0, 2877787.0, 2848514.0, 2860965.0, 2904693.0, 2948428.0, 2964118.0, 2967645.0, 2968921.0, 2968417.0, 2959448.0, 2956445.0, 2967355.0, 2968938.0, 2966314.0, 2968178.0, 2966995.0, 2955761.0, 2942775.0, 2953308.0, 2965102.0, 2965346.0, 2958661.0, 2952316.0, 2951858.0, 2958531.0, 2972770.0, 2971110.0, 2970829.0, 2971563.0, 2972063.0, 2964048.0, 2963294.0, 2974567.0, 2974701.0, 2974024.0, 2974758.0, 2975218.0, 2966354.0, 2963768.0, 2975248.0, 2974227.0, 2971903.0, 2971328.0, 2971147.0, 2962254.0, 2959800.0, 2970570.0, 2970297.0, 2970254.0, 2969810.0, 2968089.0, 2950622.0, 2936113.0, 2958136.0, 2968011.0, 2967487.0, 2967331.0, 2968700.0, 2960729.0, 2958441.0, 2970015.0, 2969611.0, 2969030.0, 2969272.0, 2969322.0, 2959264.0, 2955590.0, 2968474.0, 2967776.0, 2967589.0, 2967354.0, 2967760.0, 2955384.0, 2953563.0, 2966539.0, 2966642.0, 2966056.0, 2964211.0, 2964866.0, 2954951.0, 2952275.0, 2965515.0, 2965756.0, 2966343.0, 2966316.0, 2966562.0, 2956984.0, 2955611.0, 2967509.0, 2963904.0, 2962209.0, 2965277.0, 2965374.0, 2956004.0, 2954509.0, 2966873.0, 2966433.0, 2965920.0, 2958152.0, 2956205.0, 2945982.0, 2941826.0, 2952071.0, 2963405.0, 2961946.0, 2960587.0, 2940625.0, 2911002.0, 2911956.0, 2928277.0, 2934119.0, 2954682.0, 2959980.0, 2959979.0, 2957081.0, 2955092.0, 2965536.0, 2968369.0, 2967753.0, 2967436.0, 2965268.0, 2944383.0, 2931209.0, 2957434.0, 2967991.0, 2967853.0, 2968051.0, 2968732.0, 2959892.0, 2959081.0, 2970338.0, 2969463.0, 2969353.0, 2968994.0, 2969130.0, 2960003.0, 2958565.0, 2970865.0, 2969956.0, 2969838.0, 2969571.0, 2968831.0, 2959181.0, 2958301.0, 2970089.0, 2969310.0, 2969358.0, 2969787.0, 2969445.0, 2959307.0, 2957691.0, 2969586.0, 2969293.0, 2968996.0, 2969502.0, 2969072.0, 2959748.0, 2958272.0, 2969633.0, 2969633.0, 2968942.0, 2966511.0, 2966281.0, 2958203.0, 2957183.0, 2968944.0, 2968692.0, 2968771.0, 2967853.0, 2967338.0, 2958299.0, 2955002.0, 2967879.0, 2966724.0, 2967187.0, 2967578.0, 2966348.0, 2956612.0, 2954020.0, 2964293.0, 2963187.0, 2961944.0, 2959664.0, 2943083.0, 2928735.0, 2941154.0, 2958652.0, 2959757.0, 2959781.0, 2959180.0, 2958408.0, 2944729.0, 2930724.0, 2949102.0, 2960189.0, 2961360.0, 2961829.0, 2961153.0, 2951593.0, 2949241.0, 2962068.0, 2963765.0, 2964794.0, 2965109.0, 2965101.0, 2954792.0, 2952078.0, 2965666.0, 2965548.0, 2966486.0, 2966592.0, 2966149.0, 2955806.0, 2954065.0, 2968588.0, 2968711.0, 2968914.0, 2968070.0, 2966903.0, 2955167.0, 2953232.0, 2969206.0, 2969168.0, 2969127.0, 2969402.0, 2968331.0, 2956318.0, 2954720.0, 2975291.0, 2977436.0, 2978657.0, 2977292.0, 2977431.0, 2966254.0, 2960121.0, 2969002.0, 2970219.0, 2969670.0, 2969526.0, 2968911.0, 2957552.0, 2945594.0, 2964431.0, 2972002.0, 2972191.0, 2971715.0, 2971278.0, 2962876.0, 2961011.0, 2971872.0, 2971018.0, 2971511.0, 2969976.0, 2967948.0, 2958252.0, 2951724.0, 2958559.0, 2956169.0, 2950263.0, 2937174.0, 2904730.0, 2867617.0, 2847408.0],
+                        borderWidth: 1,
+                        borderColor: "#aaa",
+                        pointRadius: 0,
+                        borderDash: [2, 2],
+                        tension: 0.6
+                    },
+                    {
+                        label: '2024',
+                        data: [2874153.0, 2921952.0, 2948879.0, 2958007.0, 2961702.0, 2957648.0, 2959395.0, 2972155.0, 2973047.0, 2973878.0, 2973611.0, 2973437.0, 2964490.0, 2963262.0, 2975761.0, 2975877.0, 2976735.0, 2976470.0, 2976063.0, 2966216.0, 2965049.0, 2977204.0, 2977410.0, 2977403.0, 2977016.0, 2976838.0, 2966578.0, 2965107.0, 2977555.0, 2978033.0, 2978252.0, 2978338.0, 2978279.0, 2969222.0, 2967901.0, 2979839.0, 2980040.0, 2979984.0, 2979272.0, 2975019.0, 2962902.0, 2964633.0, 2979564.0, 2981141.0, 2980696.0, 2980954.0, 2980912.0, 2972517.0, 2970946.0, 2982348.0, 2982461.0, 2981480.0, 2980872.0, 2980094.0, 2964262.0, 2952899.0, 2973008.0, 2981388.0, 2981432.0, 2981878.0, 2982136.0, 2973874.0, 2972173.0, 2983623.0, 2983767.0, 2983169.0, 2982769.0, 2982597.0, 2972180.0, 2970110.0, 2982999.0, 2983072.0, 2983387.0, 2982690.0, 2981283.0, 2971124.0, 2969673.0, 2982055.0, 2981587.0, 2980839.0, 2980100.0, 2979888.0, 2970409.0, 2969080.0, 2980907.0, 2981718.0, 2980188.0, 2979682.0, 2979031.0, 2969848.0, 2966755.0, 2978284.0, 2977947.0, 2977428.0, 2975985.0, 2975698.0, 2963398.0, 2953841.0, 2967031.0, 2970287.0, 2965173.0, 2957614.0, 2932433.0, 2885257.0, 2863292.0, 2877452.0, 2914952.0, 2946199.0, 2956728.0, 2960789.0, 2959359.0, 2961841.0, 2971675.0, 2972542.0, 2972705.0, 2972749.0, 2973179.0, 2965276.0, 2965209.0, 2976183.0, 2976222.0, 2970386.0, 2973809.0, 2971773.0, 2958511.0, 2951238.0, 2969040.0, 2973775.0, 2973029.0, 2974972.0, 2971991.0, 2965257.0, 2966451.0, 2977956.0, 2976819.0, 2978934.0, 2979866.0, 2980353.0, 2971841.0, 2970753.0, 2980206.0, 2978861.0, 2975883.0, 2979908.0, 2979894.0, 2974114.0, 2972786.0, 2983401.0, 2983845.0, 2983931.0, 2983812.0, 2983004.0, 2970701.0, 2955894.0, 2972784.0, 2984704.0, 2984861.0, 2985590.0, 2986473.0, 2978682.0, 2977039.0, 2987560.0, 2987949.0, 2988341.0, 2987675.0, 2988927.0, 2981215.0, 2979241.0, 2989324.0, 2989546.0, 2990261.0, 2990970.0, 2991178.0, 2982808.0, 2980965.0, 2992676.0, 2991596.0, 2990185.0, 2991011.0, 2991139.0, 2982065.0, 2980221.0, 2990077.0, 2990738.0, 2991308.0, 2991299.0, 2991926.0, 2984508.0, 2983080.0, 2993594.0, 2993622.0, 2992927.0, 2993311.0, 2991639.0, 2985291.0, 2984270.0, 2996191.0, 2994269.0, 2993418.0, 2994648.0, 2994715.0, 2978579.0, 2964974.0, 2986932.0, 2996511.0, 2997363.0, 2997935.0, 2997083.0, 2984281.0, 2969007.0, 2986085.0, 2998701.0, 2999192.0, 2999385.0, 3001192.0, 2992876.0, 2991513.0, 3001400.0, 2996213.0, 2996387.0, 2999173.0, 3001464.0, 2988709.0, 2969630.0, 2986657.0, 3004332.0, 3006113.0, 3006158.0, 3007715.0, 3000890.0, 3001129.0, 3010685.0, 3010487.0, 3010199.0, 3009427.0, 3009302.0, 3000349.0, 3000826.0, 3012466.0, 3011303.0, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+                        borderWidth: 2,
+                        borderColor: "#0094FA",
+                        backgroundColor: "#0094FA",
+                        pointRadius: 0,
+                        tension: 0.6 
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            autoSkip: true
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: true },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 1) {
+                                return ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '31 Jan\n2.98M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '29 Feb\n2.98M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '31 Mar\n2.97M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '30 Apr\n2.98M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '31 May\n2.98M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '30 Jun\n2.98M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '31 Jul\n3.00M', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''][context.dataIndex];
+                            } else {
+                                return null
+                            }
+                        },
+                        color: '#333',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('bma-modem'), {
+            type: 'line',
+            data: {
+                labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan', '13 Jan', '14 Jan', '15 Jan', '16 Jan', '17 Jan', '18 Jan', '19 Jan', '20 Jan', '21 Jan', '22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan', '29 Jan', '30 Jan', '31 Jan', '01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb', '08 Feb', '09 Feb', '10 Feb', '11 Feb', '12 Feb', '13 Feb', '14 Feb', '15 Feb', '16 Feb', '17 Feb', '18 Feb', '19 Feb', '20 Feb', '21 Feb', '22 Feb', '23 Feb', '24 Feb', '25 Feb', '26 Feb', '27 Feb', '28 Feb', '29 Feb', '01 Mar', '02 Mar', '03 Mar', '04 Mar', '05 Mar', '06 Mar', '07 Mar', '08 Mar', '09 Mar', '10 Mar', '11 Mar', '12 Mar', '13 Mar', '14 Mar', '15 Mar', '16 Mar', '17 Mar', '18 Mar', '19 Mar', '20 Mar', '21 Mar', '22 Mar', '23 Mar', '24 Mar', '25 Mar', '26 Mar', '27 Mar', '28 Mar', '29 Mar', '30 Mar', '31 Mar', '01 Apr', '02 Apr', '03 Apr', '04 Apr', '05 Apr', '06 Apr', '07 Apr', '08 Apr', '09 Apr', '10 Apr', '11 Apr', '12 Apr', '13 Apr', '14 Apr', '15 Apr', '16 Apr', '17 Apr', '18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr', '25 Apr', '26 Apr', '27 Apr', '28 Apr', '29 Apr', '30 Apr', '01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May', '12 May', '13 May', '14 May', '15 May', '16 May', '17 May', '18 May', '19 May', '20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May', '27 May', '28 May', '29 May', '30 May', '31 May', '01 Jun', '02 Jun', '03 Jun', '04 Jun', '05 Jun', '06 Jun', '07 Jun', '08 Jun', '09 Jun', '10 Jun', '11 Jun', '12 Jun', '13 Jun', '14 Jun', '15 Jun', '16 Jun', '17 Jun', '18 Jun', '19 Jun', '20 Jun', '21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', '26 Jun', '27 Jun', '28 Jun', '29 Jun', '30 Jun', '01 Jul', '02 Jul', '03 Jul', '04 Jul', '05 Jul', '06 Jul', '07 Jul', '08 Jul', '09 Jul', '10 Jul', '11 Jul', '12 Jul', '13 Jul', '14 Jul', '15 Jul', '16 Jul', '17 Jul', '18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul', '29 Jul', '30 Jul', '31 Jul', '01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug', '07 Aug', '08 Aug', '09 Aug', '10 Aug', '11 Aug', '12 Aug', '13 Aug', '14 Aug', '15 Aug', '16 Aug', '17 Aug', '18 Aug', '19 Aug', '20 Aug', '21 Aug', '22 Aug', '23 Aug', '24 Aug', '25 Aug', '26 Aug', '27 Aug', '28 Aug', '29 Aug', '30 Aug', '31 Aug', '01 Sep', '02 Sep', '03 Sep', '04 Sep', '05 Sep', '06 Sep', '07 Sep', '08 Sep', '09 Sep', '10 Sep', '11 Sep', '12 Sep', '13 Sep', '14 Sep', '15 Sep', '16 Sep', '17 Sep', '18 Sep', '19 Sep', '20 Sep', '21 Sep', '22 Sep', '23 Sep', '24 Sep', '25 Sep', '26 Sep', '27 Sep', '28 Sep', '29 Sep', '30 Sep', '01 Oct', '02 Oct', '03 Oct', '04 Oct', '05 Oct', '06 Oct', '07 Oct', '08 Oct', '09 Oct', '10 Oct', '11 Oct', '12 Oct', '13 Oct', '14 Oct', '15 Oct', '16 Oct', '17 Oct', '18 Oct', '19 Oct', '20 Oct', '21 Oct', '22 Oct', '23 Oct', '24 Oct', '25 Oct', '26 Oct', '27 Oct', '28 Oct', '29 Oct', '30 Oct', '31 Oct', '01 Nov', '02 Nov', '03 Nov', '04 Nov', '05 Nov', '06 Nov', '07 Nov', '08 Nov', '09 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov', '15 Nov', '16 Nov', '17 Nov', '18 Nov', '19 Nov', '20 Nov', '21 Nov', '22 Nov', '23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov', '28 Nov', '29 Nov', '30 Nov', '01 Dec', '02 Dec', '03 Dec', '04 Dec', '05 Dec', '06 Dec', '07 Dec', '08 Dec', '09 Dec', '10 Dec', '11 Dec', '12 Dec', '13 Dec', '14 Dec', '15 Dec', '16 Dec', '17 Dec', '18 Dec', '19 Dec', '20 Dec', '21 Dec', '22 Dec', '23 Dec', '24 Dec', '25 Dec', '26 Dec', '27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec'],
+                datasets: [
+                    {
+                        label: '2023',
+                        data: ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 1146943.0, 1146340.0, 1145265.0, 1135510.0, 1124997.0, 1136510.0, 1145836.0, 1146523.0, 1146385.0, 1146301.0, 1140617.0, 1138963.0, 1146964.0, 1146759.0, 1146692.0, 1146228.0, 1145757.0, 1139492.0, 1138036.0, 1146364.0, 1146389.0, 1146518.0, 1146414.0, 1145927.0, 1139346.0, 1137295.0, 1146411.0, 1146705.0, 1144951.0, 1144864.0, 1143832.0, 1137573.0, 1134594.0, 1142366.0, 1143368.0, 1142677.0, 1138879.0, 1136572.0, 1129873.0, 1124745.0, 1127904.0, 1123166.0, 1113408.0, 1084875.0, 1067093.0, 1074185.0, 1099435.0, 1125213.0, 1135098.0, 1138077.0, 1139399.0, 1139736.0, 1134800.0, 1133675.0, 1141707.0, 1141866.0, 1139672.0, 1141203.0, 1140868.0, 1133758.0, 1125623.0, 1131872.0, 1138860.0, 1138469.0, 1133865.0, 1130094.0, 1129238.0, 1133017.0, 1141438.0, 1141471.0, 1141399.0, 1141400.0, 1141066.0, 1135855.0, 1135089.0, 1141618.0, 1141658.0, 1141665.0, 1141761.0, 1141958.0, 1136605.0, 1135333.0, 1142197.0, 1142039.0, 1141698.0, 1141535.0, 1141840.0, 1136557.0, 1134735.0, 1141116.0, 1140907.0, 1140959.0, 1140625.0, 1139613.0, 1128614.0, 1120023.0, 1133468.0, 1140076.0, 1140301.0, 1140238.0, 1140999.0, 1136215.0, 1134896.0, 1141904.0, 1141719.0, 1141241.0, 1141216.0, 1141353.0, 1135795.0, 1134017.0, 1141490.0, 1142174.0, 1142005.0, 1141950.0, 1141815.0, 1135950.0, 1134790.0, 1142228.0, 1142189.0, 1142001.0, 1141422.0, 1141426.0, 1135394.0, 1133673.0, 1141557.0, 1141626.0, 1141632.0, 1141576.0, 1141807.0, 1136170.0, 1135167.0, 1142597.0, 1139824.0, 1139135.0, 1142114.0, 1142150.0, 1136716.0, 1135563.0, 1142943.0, 1143145.0, 1143166.0, 1140423.0, 1139252.0, 1133722.0, 1131691.0, 1138127.0, 1142217.0, 1141459.0, 1140620.0, 1128231.0, 1111902.0, 1113100.0, 1122802.0, 1126410.0, 1137868.0, 1140841.0, 1141380.0, 1138745.0, 1137836.0, 1144295.0, 1145117.0, 1144946.0, 1144560.0, 1142777.0, 1130152.0, 1122012.0, 1138009.0, 1144874.0, 1144989.0, 1145851.0, 1146307.0, 1141540.0, 1141104.0, 1148008.0, 1147853.0, 1147791.0, 1147863.0, 1147646.0, 1142329.0, 1141569.0, 1148583.0, 1148371.0, 1148310.0, 1148414.0, 1148250.0, 1142504.0, 1141221.0, 1148661.0, 1148740.0, 1148932.0, 1149204.0, 1148964.0, 1142919.0, 1142319.0, 1149261.0, 1149279.0, 1149279.0, 1149513.0, 1149522.0, 1143681.0, 1142578.0, 1149423.0, 1149672.0, 1148818.0, 1148372.0, 1148772.0, 1143878.0, 1143371.0, 1150124.0, 1150131.0, 1150344.0, 1149859.0, 1149557.0, 1144216.0, 1142497.0, 1149521.0, 1149296.0, 1149776.0, 1149903.0, 1149602.0, 1143970.0, 1142365.0, 1148967.0, 1148395.0, 1147998.0, 1146264.0, 1136531.0, 1128463.0, 1135437.0, 1145958.0, 1146877.0, 1146983.0, 1146842.0, 1146153.0, 1137810.0, 1128452.0, 1139641.0, 1146749.0, 1147878.0, 1148166.0, 1147892.0, 1141586.0, 1140337.0, 1148206.0, 1149021.0, 1149932.0, 1149653.0, 1149305.0, 1142921.0, 1141025.0, 1149353.0, 1149411.0, 1149680.0, 1149387.0, 1148975.0, 1142604.0, 1141559.0, 1149924.0, 1150031.0, 1150172.0, 1149793.0, 1149031.0, 1141804.0, 1140271.0, 1149510.0, 1150218.0, 1150201.0, 1149916.0, 1149190.0, 1142208.0, 1141299.0, 1151320.0, 1152578.0, 1153127.0, 1152848.0, 1152305.0, 1145106.0, 1140680.0, 1146011.0, 1146216.0, 1149366.0, 1149158.0, 1148517.0, 1141334.0, 1133674.0, 1144966.0, 1149825.0, 1149832.0, 1149608.0, 1149153.0, 1144084.0, 1142329.0, 1148784.0, 1148416.0, 1148254.0, 1147413.0, 1146274.0, 1139935.0, 1135447.0, 1139717.0, 1138587.0, 1135555.0, 1127860.0, 1108812.0, 1087643.0, 1077198.0],
+                        borderWidth: 0.5,
+                        borderColor: "#aaa",
+                        pointRadius: 0,
+                        borderDash: [1, 1]
+                    },
+                    {
+                        label: '2024',
+                        data: [1092657.0, 1118615.0, 1133903.0, 1139049.0, 1141253.0, 1139018.0, 1140293.0, 1148202.0, 1148899.0, 1149465.0, 1149419.0, 1149176.0, 1143752.0, 1142737.0, 1150186.0, 1150428.0, 1150883.0, 1150837.0, 1150460.0, 1144447.0, 1143598.0, 1151129.0, 1151259.0, 1151358.0, 1151157.0, 1150923.0, 1144855.0, 1143793.0, 1151317.0, 1151746.0, 1151895.0, 1151855.0, 1151522.0, 1145948.0, 1144690.0, 1152068.0, 1152096.0, 1152080.0, 1151376.0, 1148812.0, 1141034.0, 1141996.0, 1151015.0, 1151987.0, 1151976.0, 1152082.0, 1152150.0, 1146965.0, 1145745.0, 1152796.0, 1152661.0, 1152502.0, 1151995.0, 1151156.0, 1141168.0, 1133891.0, 1146092.0, 1151627.0, 1151841.0, 1151955.0, 1152032.0, 1146864.0, 1145696.0, 1152717.0, 1152837.0, 1152953.0, 1152590.0, 1152366.0, 1146097.0, 1144932.0, 1152556.0, 1152760.0, 1152878.0, 1152324.0, 1151533.0, 1145223.0, 1144283.0, 1152043.0, 1151829.0, 1152022.0, 1151434.0, 1151242.0, 1145122.0, 1144087.0, 1151678.0, 1152091.0, 1152191.0, 1151658.0, 1151124.0, 1145433.0, 1143652.0, 1150935.0, 1150535.0, 1150223.0, 1149536.0, 1148783.0, 1140960.0, 1133792.0, 1141562.0, 1143808.0, 1141750.0, 1136512.0, 1119733.0, 1093409.0, 1081069.0, 1090020.0, 1112755.0, 1131530.0, 1137644.0, 1140608.0, 1139482.0, 1140701.0, 1148584.0, 1148968.0, 1149430.0, 1149482.0, 1149629.0, 1144908.0, 1143318.0, 1149943.0, 1149916.0, 1146026.0, 1147925.0, 1147573.0, 1140985.0, 1135081.0, 1145661.0, 1149715.0, 1149271.0, 1149382.0, 1148112.0, 1142889.0, 1143126.0, 1150104.0, 1149285.0, 1150060.0, 1150016.0, 1149991.0, 1144900.0, 1143639.0, 1149868.0, 1149190.0, 1146930.0, 1149361.0, 1149382.0, 1145369.0, 1144514.0, 1150709.0, 1150814.0, 1150825.0, 1150663.0, 1150237.0, 1142782.0, 1133151.0, 1142944.0, 1150102.0, 1150184.0, 1150505.0, 1150770.0, 1146227.0, 1145236.0, 1151612.0, 1151610.0, 1151843.0, 1151600.0, 1151961.0, 1147041.0, 1145723.0, 1152327.0, 1152140.0, 1152311.0, 1152366.0, 1152676.0, 1147270.0, 1146688.0, 1153241.0, 1153176.0, 1153129.0, 1153022.0, 1153126.0, 1147871.0, 1146595.0, 1153383.0, 1153148.0, 1153422.0, 1153118.0, 1153243.0, 1148388.0, 1147245.0, 1153836.0, 1153796.0, 1154154.0, 1154139.0, 1153916.0, 1149456.0, 1148240.0, 1155068.0, 1154505.0, 1154433.0, 1154286.0, 1153608.0, 1143364.0, 1135162.0, 1148011.0, 1153781.0, 1154282.0, 1154588.0, 1154322.0, 1146735.0, 1137236.0, 1146963.0, 1155087.0, 1155561.0, 1154880.0, 1155797.0, 1151350.0, 1149355.0, 1154445.0, 1150713.0, 1152130.0, 1154392.0, 1155427.0, 1147713.0, 1136437.0, 1146500.0, 1157551.0, 1158173.0, 1158702.0, 1159328.0, 1155387.0, 1154798.0, 1161221.0, 1161346.0, 1161421.0, 1161560.0, 1161952.0, 1157202.0, 1156318.0, 1162758.0, 1162116.0, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+                        borderWidth: 1,
+                        borderColor: "#0094FA",
+                        backgroundColor: "#0094FA",
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            autoSkip: true
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 1) {
+                                return null;
+                            } else {
+                                return null
+                            }
+                        },
+                        color: '#333',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('east-modem'), {
+            type: 'line',
+            data: {
+                labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan', '13 Jan', '14 Jan', '15 Jan', '16 Jan', '17 Jan', '18 Jan', '19 Jan', '20 Jan', '21 Jan', '22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan', '29 Jan', '30 Jan', '31 Jan', '01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb', '08 Feb', '09 Feb', '10 Feb', '11 Feb', '12 Feb', '13 Feb', '14 Feb', '15 Feb', '16 Feb', '17 Feb', '18 Feb', '19 Feb', '20 Feb', '21 Feb', '22 Feb', '23 Feb', '24 Feb', '25 Feb', '26 Feb', '27 Feb', '28 Feb', '29 Feb', '01 Mar', '02 Mar', '03 Mar', '04 Mar', '05 Mar', '06 Mar', '07 Mar', '08 Mar', '09 Mar', '10 Mar', '11 Mar', '12 Mar', '13 Mar', '14 Mar', '15 Mar', '16 Mar', '17 Mar', '18 Mar', '19 Mar', '20 Mar', '21 Mar', '22 Mar', '23 Mar', '24 Mar', '25 Mar', '26 Mar', '27 Mar', '28 Mar', '29 Mar', '30 Mar', '31 Mar', '01 Apr', '02 Apr', '03 Apr', '04 Apr', '05 Apr', '06 Apr', '07 Apr', '08 Apr', '09 Apr', '10 Apr', '11 Apr', '12 Apr', '13 Apr', '14 Apr', '15 Apr', '16 Apr', '17 Apr', '18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr', '25 Apr', '26 Apr', '27 Apr', '28 Apr', '29 Apr', '30 Apr', '01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May', '12 May', '13 May', '14 May', '15 May', '16 May', '17 May', '18 May', '19 May', '20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May', '27 May', '28 May', '29 May', '30 May', '31 May', '01 Jun', '02 Jun', '03 Jun', '04 Jun', '05 Jun', '06 Jun', '07 Jun', '08 Jun', '09 Jun', '10 Jun', '11 Jun', '12 Jun', '13 Jun', '14 Jun', '15 Jun', '16 Jun', '17 Jun', '18 Jun', '19 Jun', '20 Jun', '21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', '26 Jun', '27 Jun', '28 Jun', '29 Jun', '30 Jun', '01 Jul', '02 Jul', '03 Jul', '04 Jul', '05 Jul', '06 Jul', '07 Jul', '08 Jul', '09 Jul', '10 Jul', '11 Jul', '12 Jul', '13 Jul', '14 Jul', '15 Jul', '16 Jul', '17 Jul', '18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul', '29 Jul', '30 Jul', '31 Jul', '01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug', '07 Aug', '08 Aug', '09 Aug', '10 Aug', '11 Aug', '12 Aug', '13 Aug', '14 Aug', '15 Aug', '16 Aug', '17 Aug', '18 Aug', '19 Aug', '20 Aug', '21 Aug', '22 Aug', '23 Aug', '24 Aug', '25 Aug', '26 Aug', '27 Aug', '28 Aug', '29 Aug', '30 Aug', '31 Aug', '01 Sep', '02 Sep', '03 Sep', '04 Sep', '05 Sep', '06 Sep', '07 Sep', '08 Sep', '09 Sep', '10 Sep', '11 Sep', '12 Sep', '13 Sep', '14 Sep', '15 Sep', '16 Sep', '17 Sep', '18 Sep', '19 Sep', '20 Sep', '21 Sep', '22 Sep', '23 Sep', '24 Sep', '25 Sep', '26 Sep', '27 Sep', '28 Sep', '29 Sep', '30 Sep', '01 Oct', '02 Oct', '03 Oct', '04 Oct', '05 Oct', '06 Oct', '07 Oct', '08 Oct', '09 Oct', '10 Oct', '11 Oct', '12 Oct', '13 Oct', '14 Oct', '15 Oct', '16 Oct', '17 Oct', '18 Oct', '19 Oct', '20 Oct', '21 Oct', '22 Oct', '23 Oct', '24 Oct', '25 Oct', '26 Oct', '27 Oct', '28 Oct', '29 Oct', '30 Oct', '31 Oct', '01 Nov', '02 Nov', '03 Nov', '04 Nov', '05 Nov', '06 Nov', '07 Nov', '08 Nov', '09 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov', '15 Nov', '16 Nov', '17 Nov', '18 Nov', '19 Nov', '20 Nov', '21 Nov', '22 Nov', '23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov', '28 Nov', '29 Nov', '30 Nov', '01 Dec', '02 Dec', '03 Dec', '04 Dec', '05 Dec', '06 Dec', '07 Dec', '08 Dec', '09 Dec', '10 Dec', '11 Dec', '12 Dec', '13 Dec', '14 Dec', '15 Dec', '16 Dec', '17 Dec', '18 Dec', '19 Dec', '20 Dec', '21 Dec', '22 Dec', '23 Dec', '24 Dec', '25 Dec', '26 Dec', '27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec'],
+                datasets: [
+                    {
+                        label: '2023',
+                        data: ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 425194.0, 425070.0, 424611.0, 422261.0, 420020.0, 422855.0, 425039.0, 425220.0, 425253.0, 425111.0, 424177.0, 424009.0, 425494.0, 425418.0, 425460.0, 425278.0, 425333.0, 424139.0, 423944.0, 425574.0, 425620.0, 424873.0, 424874.0, 424726.0, 423545.0, 423275.0, 425060.0, 425904.0, 425892.0, 425835.0, 425041.0, 424010.0, 423665.0, 424995.0, 424987.0, 424962.0, 425004.0, 424187.0, 421985.0, 418309.0, 416477.0, 414220.0, 410283.0, 402393.0, 398435.0, 402317.0, 412359.0, 420483.0, 423241.0, 423885.0, 424499.0, 424741.0, 424012.0, 423738.0, 425173.0, 424961.0, 424481.0, 424804.0, 424511.0, 422965.0, 420700.0, 422048.0, 424083.0, 424345.0, 423994.0, 423305.0, 423097.0, 423862.0, 425605.0, 425551.0, 425020.0, 425349.0, 425392.0, 423625.0, 423776.0, 425344.0, 425569.0, 425581.0, 425655.0, 426335.0, 425406.0, 425300.0, 426559.0, 426337.0, 426182.0, 426202.0, 426207.0, 425220.0, 424842.0, 426171.0, 426028.0, 425883.0, 425929.0, 425513.0, 423261.0, 421252.0, 424421.0, 425783.0, 425821.0, 425746.0, 425856.0, 425008.0, 424892.0, 426266.0, 426050.0, 426120.0, 426120.0, 426187.0, 425048.0, 424737.0, 426204.0, 426106.0, 426134.0, 426007.0, 425983.0, 424805.0, 424608.0, 426045.0, 426180.0, 426032.0, 425798.0, 425999.0, 424801.0, 424265.0, 426072.0, 426114.0, 426222.0, 426317.0, 426271.0, 425235.0, 425090.0, 426463.0, 425919.0, 425940.0, 426240.0, 426302.0, 424974.0, 425101.0, 426758.0, 426600.0, 426675.0, 425413.0, 424988.0, 423609.0, 423364.0, 424522.0, 426043.0, 425957.0, 425704.0, 422060.0, 416374.0, 417081.0, 420046.0, 421781.0, 425055.0, 425387.0, 425404.0, 425452.0, 425140.0, 426248.0, 426937.0, 426851.0, 427190.0, 426744.0, 423735.0, 421860.0, 425845.0, 427240.0, 427292.0, 427252.0, 427381.0, 426539.0, 426691.0, 427837.0, 427653.0, 427653.0, 427611.0, 427541.0, 426700.0, 426573.0, 427954.0, 427725.0, 427742.0, 427819.0, 427777.0, 426807.0, 426706.0, 427961.0, 427676.0, 427944.0, 427771.0, 427798.0, 426678.0, 426518.0, 427922.0, 427910.0, 427815.0, 427991.0, 427837.0, 426927.0, 426901.0, 428202.0, 428200.0, 428020.0, 427382.0, 427201.0, 426604.0, 426461.0, 427727.0, 427702.0, 427367.0, 427548.0, 427475.0, 426682.0, 426375.0, 427729.0, 427390.0, 427506.0, 427982.0, 427904.0, 427053.0, 426891.0, 428038.0, 427913.0, 427713.0, 427327.0, 425100.0, 422317.0, 424456.0, 426962.0, 427128.0, 427182.0, 427138.0, 427087.0, 425388.0, 423489.0, 425900.0, 427415.0, 427459.0, 427604.0, 427335.0, 426460.0, 426038.0, 427543.0, 427878.0, 427920.0, 427714.0, 427865.0, 426519.0, 425940.0, 427781.0, 427459.0, 428012.0, 427982.0, 427824.0, 426872.0, 426784.0, 428559.0, 428735.0, 428780.0, 428694.0, 428515.0, 427096.0, 426841.0, 428971.0, 428687.0, 429033.0, 429103.0, 428884.0, 427309.0, 427324.0, 434864.0, 434959.0, 435203.0, 435297.0, 435423.0, 434729.0, 434127.0, 434824.0, 435130.0, 429573.0, 429483.0, 429452.0, 428255.0, 427286.0, 429375.0, 430070.0, 430031.0, 430097.0, 430069.0, 429130.0, 429216.0, 430396.0, 430365.0, 430366.0, 430198.0, 429605.0, 428921.0, 427808.0, 428218.0, 427596.0, 425014.0, 420253.0, 412670.0, 405784.0, 402437.0],
+                        borderWidth: 0.5,
+                        borderColor: "#aaa",
+                        pointRadius: 0,
+                        borderDash: [1, 1]
+                    },
+                    {
+                        label: '2024',
+                        data: [407250.0, 418133.0, 425519.0, 428044.0, 428798.0, 428771.0, 429235.0, 430563.0, 430678.0, 430774.0, 430638.0, 430617.0, 429505.0, 429450.0, 431039.0, 431062.0, 431043.0, 431021.0, 430934.0, 429921.0, 429977.0, 431379.0, 431474.0, 431367.0, 431301.0, 431287.0, 430082.0, 429986.0, 431652.0, 431594.0, 431720.0, 431686.0, 431698.0, 430658.0, 430598.0, 431952.0, 432043.0, 432042.0, 432045.0, 431307.0, 429869.0, 430096.0, 432146.0, 432401.0, 432124.0, 432395.0, 432286.0, 431275.0, 431135.0, 432498.0, 432567.0, 432500.0, 432514.0, 432286.0, 430327.0, 428792.0, 431681.0, 432528.0, 432525.0, 432670.0, 432667.0, 431795.0, 431543.0, 432780.0, 432840.0, 432585.0, 432368.0, 432415.0, 431296.0, 431116.0, 432831.0, 432711.0, 432754.0, 432691.0, 432539.0, 431505.0, 431222.0, 432744.0, 432606.0, 432457.0, 432457.0, 432493.0, 431344.0, 431459.0, 432852.0, 432920.0, 432881.0, 432469.0, 432697.0, 431676.0, 431284.0, 432557.0, 432695.0, 432679.0, 432450.0, 432516.0, 431464.0, 430441.0, 431892.0, 432042.0, 431034.0, 429791.0, 424787.0, 415640.0, 410466.0, 412701.0, 418861.0, 425062.0, 427383.0, 428445.0, 429210.0, 430284.0, 432641.0, 432670.0, 432595.0, 432443.0, 432697.0, 431577.0, 431204.0, 432739.0, 432186.0, 431817.0, 432276.0, 432213.0, 430600.0, 430357.0, 432205.0, 432117.0, 431892.0, 431913.0, 432004.0, 430910.0, 430883.0, 431728.0, 432308.0, 432466.0, 432694.0, 432861.0, 432126.0, 432147.0, 433219.0, 432807.0, 432725.0, 433067.0, 432740.0, 432363.0, 432260.0, 433470.0, 433699.0, 433722.0, 433576.0, 433458.0, 431707.0, 429479.0, 432039.0, 433795.0, 433908.0, 434039.0, 433897.0, 433425.0, 433438.0, 434510.0, 434623.0, 434443.0, 434579.0, 434741.0, 433991.0, 433841.0, 435089.0, 435033.0, 435015.0, 435050.0, 435087.0, 434168.0, 434243.0, 435343.0, 435105.0, 435183.0, 435442.0, 435445.0, 434484.0, 434235.0, 435487.0, 435660.0, 435671.0, 435322.0, 435588.0, 434901.0, 434730.0, 436221.0, 436244.0, 436015.0, 435912.0, 435885.0, 435014.0, 434692.0, 436124.0, 435936.0, 435803.0, 435945.0, 435778.0, 433534.0, 431725.0, 434521.0, 435627.0, 435784.0, 435851.0, 435340.0, 433205.0, 431104.0, 433557.0, 435763.0, 435679.0, 435898.0, 436488.0, 435655.0, 435715.0, 436794.0, 436348.0, 436223.0, 435729.0, 435464.0, 433623.0, 430324.0, 432678.0, 435226.0, 436213.0, 435945.0, 436883.0, 435998.0, 436234.0, 436817.0, 437127.0, 436844.0, 436578.0, 436743.0, 436205.0, 436247.0, 437751.0, 437571.0, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+                        borderWidth: 1,
+                        borderColor: "#0094FA",
+                        backgroundColor: "#0094FA",
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            autoSkip: true
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 1) {
+                                return null
+                            } else {
+                                return null
+                            }
+                        },
+                        color: '#333',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        new Chart(document.getElementById('upc-modem'), {
+            type: 'line',
+            data: {
+                labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan', '13 Jan', '14 Jan', '15 Jan', '16 Jan', '17 Jan', '18 Jan', '19 Jan', '20 Jan', '21 Jan', '22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan', '29 Jan', '30 Jan', '31 Jan', '01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb', '08 Feb', '09 Feb', '10 Feb', '11 Feb', '12 Feb', '13 Feb', '14 Feb', '15 Feb', '16 Feb', '17 Feb', '18 Feb', '19 Feb', '20 Feb', '21 Feb', '22 Feb', '23 Feb', '24 Feb', '25 Feb', '26 Feb', '27 Feb', '28 Feb', '29 Feb', '01 Mar', '02 Mar', '03 Mar', '04 Mar', '05 Mar', '06 Mar', '07 Mar', '08 Mar', '09 Mar', '10 Mar', '11 Mar', '12 Mar', '13 Mar', '14 Mar', '15 Mar', '16 Mar', '17 Mar', '18 Mar', '19 Mar', '20 Mar', '21 Mar', '22 Mar', '23 Mar', '24 Mar', '25 Mar', '26 Mar', '27 Mar', '28 Mar', '29 Mar', '30 Mar', '31 Mar', '01 Apr', '02 Apr', '03 Apr', '04 Apr', '05 Apr', '06 Apr', '07 Apr', '08 Apr', '09 Apr', '10 Apr', '11 Apr', '12 Apr', '13 Apr', '14 Apr', '15 Apr', '16 Apr', '17 Apr', '18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr', '25 Apr', '26 Apr', '27 Apr', '28 Apr', '29 Apr', '30 Apr', '01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May', '08 May', '09 May', '10 May', '11 May', '12 May', '13 May', '14 May', '15 May', '16 May', '17 May', '18 May', '19 May', '20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May', '27 May', '28 May', '29 May', '30 May', '31 May', '01 Jun', '02 Jun', '03 Jun', '04 Jun', '05 Jun', '06 Jun', '07 Jun', '08 Jun', '09 Jun', '10 Jun', '11 Jun', '12 Jun', '13 Jun', '14 Jun', '15 Jun', '16 Jun', '17 Jun', '18 Jun', '19 Jun', '20 Jun', '21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', '26 Jun', '27 Jun', '28 Jun', '29 Jun', '30 Jun', '01 Jul', '02 Jul', '03 Jul', '04 Jul', '05 Jul', '06 Jul', '07 Jul', '08 Jul', '09 Jul', '10 Jul', '11 Jul', '12 Jul', '13 Jul', '14 Jul', '15 Jul', '16 Jul', '17 Jul', '18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul', '25 Jul', '26 Jul', '27 Jul', '28 Jul', '29 Jul', '30 Jul', '31 Jul', '01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug', '07 Aug', '08 Aug', '09 Aug', '10 Aug', '11 Aug', '12 Aug', '13 Aug', '14 Aug', '15 Aug', '16 Aug', '17 Aug', '18 Aug', '19 Aug', '20 Aug', '21 Aug', '22 Aug', '23 Aug', '24 Aug', '25 Aug', '26 Aug', '27 Aug', '28 Aug', '29 Aug', '30 Aug', '31 Aug', '01 Sep', '02 Sep', '03 Sep', '04 Sep', '05 Sep', '06 Sep', '07 Sep', '08 Sep', '09 Sep', '10 Sep', '11 Sep', '12 Sep', '13 Sep', '14 Sep', '15 Sep', '16 Sep', '17 Sep', '18 Sep', '19 Sep', '20 Sep', '21 Sep', '22 Sep', '23 Sep', '24 Sep', '25 Sep', '26 Sep', '27 Sep', '28 Sep', '29 Sep', '30 Sep', '01 Oct', '02 Oct', '03 Oct', '04 Oct', '05 Oct', '06 Oct', '07 Oct', '08 Oct', '09 Oct', '10 Oct', '11 Oct', '12 Oct', '13 Oct', '14 Oct', '15 Oct', '16 Oct', '17 Oct', '18 Oct', '19 Oct', '20 Oct', '21 Oct', '22 Oct', '23 Oct', '24 Oct', '25 Oct', '26 Oct', '27 Oct', '28 Oct', '29 Oct', '30 Oct', '31 Oct', '01 Nov', '02 Nov', '03 Nov', '04 Nov', '05 Nov', '06 Nov', '07 Nov', '08 Nov', '09 Nov', '10 Nov', '11 Nov', '12 Nov', '13 Nov', '14 Nov', '15 Nov', '16 Nov', '17 Nov', '18 Nov', '19 Nov', '20 Nov', '21 Nov', '22 Nov', '23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov', '28 Nov', '29 Nov', '30 Nov', '01 Dec', '02 Dec', '03 Dec', '04 Dec', '05 Dec', '06 Dec', '07 Dec', '08 Dec', '09 Dec', '10 Dec', '11 Dec', '12 Dec', '13 Dec', '14 Dec', '15 Dec', '16 Dec', '17 Dec', '18 Dec', '19 Dec', '20 Dec', '21 Dec', '22 Dec', '23 Dec', '24 Dec', '25 Dec', '26 Dec', '27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec'],
+                datasets: [
+                    {
+                        label: '2023',
+                        data: ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 1417900.0, 1417551.0, 1417256.0, 1413111.0, 1409825.0, 1414685.0, 1418213.0, 1418059.0, 1417524.0, 1417394.0, 1414463.0, 1413603.0, 1416973.0, 1417075.0, 1416771.0, 1416203.0, 1416150.0, 1412743.0, 1410851.0, 1415048.0, 1414354.0, 1413467.0, 1413213.0, 1413073.0, 1409673.0, 1408790.0, 1412707.0, 1412625.0, 1411919.0, 1411859.0, 1411224.0, 1407979.0, 1406147.0, 1408963.0, 1409166.0, 1409074.0, 1408122.0, 1407519.0, 1405004.0, 1403764.0, 1406520.0, 1405897.0, 1403299.0, 1390519.0, 1382986.0, 1384463.0, 1392899.0, 1402732.0, 1405779.0, 1405683.0, 1405023.0, 1403940.0, 1400636.0, 1399032.0, 1400475.0, 1402111.0, 1402161.0, 1402171.0, 1401616.0, 1399038.0, 1396452.0, 1399388.0, 1402159.0, 1402532.0, 1400802.0, 1398917.0, 1399523.0, 1401652.0, 1405727.0, 1404088.0, 1404410.0, 1404814.0, 1405605.0, 1404568.0, 1404429.0, 1407605.0, 1407474.0, 1406778.0, 1407342.0, 1406925.0, 1404343.0, 1403135.0, 1406492.0, 1405851.0, 1404023.0, 1403591.0, 1403100.0, 1400477.0, 1400223.0, 1403283.0, 1403362.0, 1403412.0, 1403256.0, 1402963.0, 1398747.0, 1394838.0, 1400247.0, 1402152.0, 1401365.0, 1401347.0, 1401845.0, 1399506.0, 1398653.0, 1401845.0, 1401842.0, 1401669.0, 1401936.0, 1401782.0, 1398421.0, 1396836.0, 1400780.0, 1399496.0, 1399450.0, 1399397.0, 1399962.0, 1394629.0, 1394165.0, 1398266.0, 1398273.0, 1398023.0, 1396991.0, 1397441.0, 1394756.0, 1394337.0, 1397886.0, 1398016.0, 1398489.0, 1398423.0, 1398484.0, 1395579.0, 1395354.0, 1398449.0, 1398161.0, 1397134.0, 1396923.0, 1396922.0, 1394314.0, 1393845.0, 1397172.0, 1396688.0, 1396079.0, 1392316.0, 1391965.0, 1388651.0, 1386771.0, 1389422.0, 1395145.0, 1394530.0, 1394263.0, 1390334.0, 1382726.0, 1381775.0, 1385429.0, 1385928.0, 1391759.0, 1393752.0, 1393195.0, 1392884.0, 1392116.0, 1394993.0, 1396315.0, 1395956.0, 1395686.0, 1395747.0, 1390496.0, 1387337.0, 1393580.0, 1395877.0, 1395572.0, 1394948.0, 1395044.0, 1391813.0, 1391286.0, 1394493.0, 1393957.0, 1393909.0, 1393520.0, 1393943.0, 1390974.0, 1390423.0, 1394328.0, 1393860.0, 1393786.0, 1393338.0, 1392804.0, 1389870.0, 1390374.0, 1393467.0, 1392894.0, 1392482.0, 1392812.0, 1392683.0, 1389710.0, 1388854.0, 1392403.0, 1392104.0, 1391902.0, 1391998.0, 1391713.0, 1389140.0, 1388793.0, 1392008.0, 1391761.0, 1392104.0, 1390757.0, 1390308.0, 1387721.0, 1387351.0, 1391093.0, 1390859.0, 1391060.0, 1390446.0, 1390306.0, 1387401.0, 1386130.0, 1390629.0, 1390038.0, 1389905.0, 1389693.0, 1388842.0, 1385589.0, 1384764.0, 1387288.0, 1386879.0, 1386233.0, 1386073.0, 1381452.0, 1377955.0, 1381261.0, 1385732.0, 1385752.0, 1385616.0, 1385200.0, 1385168.0, 1381531.0, 1378783.0, 1383561.0, 1386025.0, 1386023.0, 1386059.0, 1385926.0, 1383547.0, 1382866.0, 1386319.0, 1386866.0, 1386942.0, 1387742.0, 1387931.0, 1385352.0, 1385113.0, 1388532.0, 1388678.0, 1388794.0, 1389223.0, 1389350.0, 1386330.0, 1385722.0, 1390105.0, 1389945.0, 1389962.0, 1389583.0, 1389357.0, 1386267.0, 1386120.0, 1390725.0, 1390263.0, 1389893.0, 1390383.0, 1390257.0, 1386801.0, 1386097.0, 1389107.0, 1389899.0, 1390327.0, 1389147.0, 1389703.0, 1386419.0, 1385314.0, 1388167.0, 1388873.0, 1390731.0, 1390885.0, 1390942.0, 1387963.0, 1384634.0, 1390090.0, 1392107.0, 1392328.0, 1392010.0, 1392056.0, 1389662.0, 1389466.0, 1392692.0, 1392237.0, 1392891.0, 1392365.0, 1392069.0, 1389396.0, 1388469.0, 1390624.0, 1389986.0, 1389694.0, 1389061.0, 1383248.0, 1374190.0, 1367773.0],
+                        borderWidth: 0.5,
+                        borderColor: "#aaa",
+                        pointRadius: 0,
+                        borderDash: [1, 1]
+                    },
+                    {
+                        label: '2024',
+                        data: [1374246.0, 1385204.0, 1389457.0, 1390914.0, 1391651.0, 1389859.0, 1389867.0, 1393390.0, 1393470.0, 1393639.0, 1393554.0, 1393644.0, 1391233.0, 1391075.0, 1394536.0, 1394387.0, 1394809.0, 1394612.0, 1394669.0, 1391848.0, 1391474.0, 1394696.0, 1394677.0, 1394678.0, 1394558.0, 1394628.0, 1391641.0, 1391328.0, 1394586.0, 1394693.0, 1394637.0, 1394797.0, 1395059.0, 1392616.0, 1392613.0, 1395819.0, 1395901.0, 1395862.0, 1395851.0, 1394900.0, 1391999.0, 1392541.0, 1396403.0, 1396753.0, 1396596.0, 1396477.0, 1396476.0, 1394277.0, 1394066.0, 1397054.0, 1397233.0, 1396478.0, 1396363.0, 1396652.0, 1392767.0, 1390216.0, 1395235.0, 1397233.0, 1397066.0, 1397253.0, 1397437.0, 1395215.0, 1394934.0, 1398126.0, 1398090.0, 1397631.0, 1397811.0, 1397816.0, 1394787.0, 1394062.0, 1397612.0, 1397601.0, 1397755.0, 1397675.0, 1397211.0, 1394396.0, 1394168.0, 1397268.0, 1397152.0, 1396360.0, 1396209.0, 1396153.0, 1393943.0, 1393534.0, 1396377.0, 1396707.0, 1395116.0, 1395555.0, 1395210.0, 1392739.0, 1391819.0, 1394792.0, 1394717.0, 1394526.0, 1393999.0, 1394399.0, 1390974.0, 1389608.0, 1393577.0, 1394437.0, 1392389.0, 1391311.0, 1387913.0, 1376208.0, 1371757.0, 1374731.0, 1383336.0, 1389607.0, 1391701.0, 1391736.0, 1390667.0, 1390856.0, 1390450.0, 1390904.0, 1390680.0, 1390824.0, 1390853.0, 1388791.0, 1390687.0, 1393501.0, 1394120.0, 1392543.0, 1393608.0, 1391987.0, 1386926.0, 1385800.0, 1391174.0, 1391943.0, 1391866.0, 1393677.0, 1391875.0, 1391458.0, 1392442.0, 1396124.0, 1395226.0, 1396408.0, 1397156.0, 1397501.0, 1394815.0, 1394967.0, 1397119.0, 1396864.0, 1396228.0, 1397480.0, 1397772.0, 1396382.0, 1396012.0, 1399222.0, 1399332.0, 1399384.0, 1399573.0, 1399309.0, 1396212.0, 1393264.0, 1397801.0, 1400807.0, 1400769.0, 1401046.0, 1401806.0, 1399030.0, 1398365.0, 1401438.0, 1401716.0, 1402055.0, 1401496.0, 1402225.0, 1400183.0, 1399677.0, 1401908.0, 1402373.0, 1402935.0, 1403554.0, 1403415.0, 1401370.0, 1400034.0, 1404092.0, 1403315.0, 1401873.0, 1402547.0, 1402568.0, 1399710.0, 1399391.0, 1401207.0, 1401930.0, 1402215.0, 1402859.0, 1403095.0, 1401219.0, 1401105.0, 1403537.0, 1403582.0, 1402758.0, 1403260.0, 1401838.0, 1400821.0, 1401338.0, 1404999.0, 1403828.0, 1403182.0, 1404417.0, 1405329.0, 1401681.0, 1398087.0, 1404400.0, 1407103.0, 1407297.0, 1407496.0, 1407421.0, 1404341.0, 1400667.0, 1405565.0, 1407851.0, 1407952.0, 1408607.0, 1408907.0, 1405871.0, 1406443.0, 1410161.0, 1409152.0, 1408034.0, 1409052.0, 1410573.0, 1407373.0, 1402869.0, 1407479.0, 1411555.0, 1411727.0, 1411511.0, 1411504.0, 1409505.0, 1410097.0, 1412647.0, 1412014.0, 1411934.0, 1411289.0, 1410607.0, 1406942.0, 1408261.0, 1411957.0, 1411616.0, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'],
+                        borderWidth: 1,
+                        borderColor: "#0094FA",
+                        backgroundColor: "#0094FA",
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            autoSkip: true
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        display: false,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index'
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'bottom',
+                        formatter: (value, context) => {
+                            const datasetIndex = context.datasetIndex;
+                            if (datasetIndex === 1) {
+                                return null
+                            } else {
+                                return null
+                            }
+                        },
+                        color: '#333',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        </script>
+            <h1 id='link-mbnw'>Mobile Network Overview</h1>
+        <h2>Network KPIs</h2>
+        <div class="dashboard" style="width: 990px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Problematic Cell 4G</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 118%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -1.4%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            2.13 
+            <span class="month"> Aug-24 | Target: <2.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 2.2346441943520032, "label": "2.23"}, {"grey": null, "red": null, "yellow": null, "green": 2.416426258094537, "label": "2.42"}, {"grey": null, "red": null, "yellow": null, "green": 2.238479509437177, "label": "2.24"}, {"grey": null, "red": null, "yellow": null, "green": 2.1234698350237533, "label": "2.12"}, {"grey": null, "red": null, "yellow": null, "green": 2.159745873789852, "label": "2.16"}, {"grey": null, "red": null, "yellow": null, "green": 2.125029231324856, "label": "2.13"}]' data-color="green" data-target='[2.5, 2.5, 2.5, 2.5, 2.5, 2.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Black Cell 4G</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 120%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -7.9%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            1.39 
+            <span class="month"> Aug-24 | Target: <2</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 1.7283318819621774, "label": "1.73"}, {"grey": null, "red": null, "yellow": null, "green": 1.5251184267182534, "label": "1.53"}, {"grey": null, "red": null, "yellow": null, "green": 1.5196128403873612, "label": "1.52"}, {"grey": null, "red": null, "yellow": null, "green": 1.5845524762490832, "label": "1.58"}, {"grey": null, "red": null, "yellow": null, "green": 1.5067774252147097, "label": "1.51"}, {"grey": null, "red": null, "yellow": null, "green": 1.39425545607935, "label": "1.39"}]' data-color="green" data-target='[2.0, 2.0, 2.0, 2.0, 2.0, 2.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Application Experience Index</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 83%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM -5.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            2.48 
+            <span class="month"> Aug-24 | Target: >3</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 2.611992064869871, "label": "2.61", "green": null}, {"grey": null, "red": null, "yellow": 2.624543888004337, "label": "2.62", "green": null}, {"grey": null, "red": null, "yellow": 2.6547083275838514, "label": "2.65", "green": null}, {"grey": null, "red": null, "yellow": 2.6846458457784035, "label": "2.68", "green": null}, {"grey": null, "red": null, "yellow": 2.6138332897306515, "label": "2.61", "green": null}, {"grey": null, "red": null, "yellow": 2.47922782642782, "label": "2.48", "green": null}]' data-color="yellow" data-target='[3.0, 3.0, 3.0, 3.0, 3.0, 3.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    
+        <h2>Customer Perception & Complaints</h2>
+        <div class="dashboard" style="width: 1320px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Network NPS</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 88%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM -14%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            17.54 
+            <span class="month"> Aug-24 | Target: >20</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 19.429327842329755, "label": "19.43"}, {"grey": null, "red": null, "yellow": 17.04470276911445, "label": "17.04", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 19.163730326521023, "label": "19.16"}, {"grey": null, "red": null, "yellow": null, "green": 20.543285807473676, "label": "20.54"}, {"grey": null, "red": null, "yellow": null, "green": 20.414242494763787, "label": "20.41"}, {"grey": null, "red": null, "yellow": 17.544355294383546, "label": "17.54", "green": null}]' data-color="yellow" data-target='[18.0, 19.0, 19.0, 19.0, 20.0, 20.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Network & Usage Complaint</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 89%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM +17%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            0.07 
+            <span class="month"> Aug-24 | Target: <0.06</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 0.0564392850741267, "label": "0.06"}, {"grey": null, "red": null, "yellow": null, "green": 0.0588210057717543, "label": "0.06"}, {"grey": null, "red": null, "yellow": null, "green": 0.0560093377343393, "label": "0.06"}, {"grey": null, "red": null, "yellow": null, "green": 0.0524050550514522, "label": "0.05"}, {"grey": null, "red": null, "yellow": 0.0613063122399883, "label": "0.06", "green": null}, {"grey": null, "red": null, "yellow": 0.0673766515313961, "label": "0.07", "green": null}]' data-color="yellow" data-target='[0.06, 0.06, 0.06, 0.06, 0.06, 0.06]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Repeated Complaint</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 36%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -1.4%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            28.04 
+            <span class="month"> Aug-24 | Target: <10</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 26.235748307571903, "label": "26.24", "yellow": null, "green": null}, {"grey": null, "red": 27.5753548703893, "label": "27.58", "yellow": null, "green": null}, {"grey": null, "red": 27.102245383543547, "label": "27.10", "yellow": null, "green": null}, {"grey": null, "red": 28.4040756466625, "label": "28.40", "yellow": null, "green": null}, {"grey": null, "red": 28.45224566356574, "label": "28.45", "yellow": null, "green": null}, {"grey": null, "red": 28.043550375320837, "label": "28.04", "yellow": null, "green": null}]' data-color="red" data-target='[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Customer Minute Loss</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 9%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM +23%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            5.59 
+            <span class="month"> Aug-24 | Target: <0.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 1.1257221223808644, "label": "1.13", "yellow": null, "green": null}, {"grey": null, "red": 2.2324046713559067, "label": "2.23", "yellow": null, "green": null}, {"grey": null, "red": 3.6499420453824194, "label": "3.65", "yellow": null, "green": null}, {"grey": null, "red": 4.205977428956577, "label": "4.21", "yellow": null, "green": null}, {"grey": null, "red": 4.5602551722914, "label": "4.56", "yellow": null, "green": null}, {"grey": null, "red": 5.587851628909833, "label": "5.59", "yellow": null, "green": null}]' data-color="red" data-target='[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    <h1 id='link-bbnw'>Broadband Network Overview</h1>
+        <h2>Network Quality & Customer Complaint</h2>
+        <div class="dashboard" style="width: 1320px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>% Poor Online Network Experience</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 84%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -5.5%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            5.62 
+            <span class="month"> Aug-24 | Target: <4.70</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 4.655214058833239, "label": "4.66", "green": null}, {"grey": null, "red": null, "yellow": 5.15047597173845, "label": "5.15", "green": null}, {"grey": null, "red": null, "yellow": 5.499520958998255, "label": "5.50", "green": null}, {"grey": null, "red": null, "yellow": 5.5249126044306, "label": "5.52", "green": null}, {"grey": null, "red": null, "yellow": 5.951706284582568, "label": "5.95", "green": null}, {"grey": null, "red": null, "yellow": 5.624216961761392, "label": "5.62", "green": null}]' data-color="yellow" data-target='[4.5, 4.5, 4.5, 4.5, 4.7, 4.7]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Network & Usage Complaint</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 80%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +4.2%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            1.25 
+            <span class="month"> Aug-24 | Target: <1</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 0.9618748989847824, "label": "0.96"}, {"grey": null, "red": null, "yellow": 1.0197640142583946, "label": "1.02", "green": null}, {"grey": null, "red": null, "yellow": 1.280743121411916, "label": "1.28", "green": null}, {"grey": null, "red": null, "yellow": 1.1711032941808834, "label": "1.17", "green": null}, {"grey": null, "red": null, "yellow": 1.2046033057359065, "label": "1.20", "green": null}, {"grey": null, "red": null, "yellow": 1.2472116950710943, "label": "1.25", "green": null}]' data-color="yellow" data-target='[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Repeated Complaint</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 59%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +2.5%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            16.97 
+            <span class="month"> Aug-24 | Target: <10</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 13.249627558349516, "label": "13.25", "green": null}, {"grey": null, "red": null, "yellow": 14.049233817752734, "label": "14.05", "green": null}, {"grey": null, "red": null, "yellow": 15.37578921710126, "label": "15.38", "green": null}, {"grey": null, "red": null, "yellow": 16.389082026653835, "label": "16.39", "green": null}, {"grey": null, "red": null, "yellow": 16.546919657111484, "label": "16.55", "green": null}, {"grey": null, "red": null, "yellow": 16.966351385623167, "label": "16.97", "green": null}]' data-color="yellow" data-target='[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Customer Minute Loss</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 35%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -15%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            42.87 
+            <span class="month"> Aug-24 | Target: <15</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 15.05945873250987, "label": "15.06", "green": null}, {"grey": null, "red": null, "yellow": 22.185603677536434, "label": "22.19", "green": null}, {"grey": null, "red": 34.63884529883368, "label": "34.64", "yellow": null, "green": null}, {"grey": null, "red": 33.52814809313577, "label": "33.53", "yellow": null, "green": null}, {"grey": null, "red": 50.39374302560597, "label": "50.39", "yellow": null, "green": null}, {"grey": null, "red": 42.8727222637268, "label": "42.87", "yellow": null, "green": null}]' data-color="red" data-target='[15.0, 15.0, 15.0, 15.0, 15.0, 15.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    
+        <h2>Installation</h2>
+        <div class="dashboard" style="width: 1320px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>On-time Installation (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 102%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM -0.1%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            99.75 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 99.7970597364809, "label": "99.80"}, {"grey": null, "red": null, "yellow": null, "green": 99.77085373337826, "label": "99.77"}, {"grey": null, "red": null, "yellow": null, "green": 99.74975358612238, "label": "99.75"}, {"grey": null, "red": null, "yellow": null, "green": 99.82469894088516, "label": "99.82"}, {"grey": null, "red": null, "yellow": null, "green": 99.84885455183456, "label": "99.85"}, {"grey": null, "red": null, "yellow": null, "green": 99.75190242561467, "label": "99.75"}]' data-color="green" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Successful Installation on Customer's Preferred Date (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 103%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.7%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            97.91 
+            <span class="month"> Aug-24 | Target: >95</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 98.38924088250585, "label": "98.39"}, {"grey": null, "red": null, "yellow": null, "green": 96.0687516518249, "label": "96.07"}, {"grey": null, "red": null, "yellow": null, "green": 96.5829651442308, "label": "96.58"}, {"grey": null, "red": null, "yellow": null, "green": 95.7910910898656, "label": "95.79"}, {"grey": null, "red": null, "yellow": null, "green": 97.21362891279344, "label": "97.21"}, {"grey": null, "red": null, "yellow": null, "green": 97.91438941838052, "label": "97.91"}]' data-color="green" data-target='[95.0, 95.0, 95.0, 95.0, 95.0, 95.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Installation Gap (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 73%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -0.9%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            13.62 
+            <span class="month"> Aug-24 | Target: <10</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 13.033340360632064, "label": "13.03", "green": null}, {"grey": null, "red": null, "yellow": 13.7686596998652, "label": "13.77", "green": null}, {"grey": null, "red": null, "yellow": 13.865687369759192, "label": "13.87", "green": null}, {"grey": null, "red": null, "yellow": 13.6992014609242, "label": "13.70", "green": null}, {"grey": null, "red": null, "yellow": 13.74831711290229, "label": "13.75", "green": null}, {"grey": null, "red": null, "yellow": 13.61561977523028, "label": "13.62", "green": null}]' data-color="yellow" data-target='[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Check and Balance (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 99%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM -0.1%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            97.32 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 97.12477822949052, "label": "97.12", "green": null}, {"grey": null, "red": null, "yellow": 97.0354099583859, "label": "97.04", "green": null}, {"grey": null, "red": null, "yellow": 97.08270784902948, "label": "97.08", "green": null}, {"grey": null, "red": null, "yellow": 97.11941283516596, "label": "97.12", "green": null}, {"grey": null, "red": null, "yellow": 97.37908511688724, "label": "97.38", "green": null}, {"grey": null, "red": null, "yellow": 97.32282313527872, "label": "97.32", "green": null}]' data-color="yellow" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>True Tech Grading A+B (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 105%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.2%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            99.65 
+            <span class="month"> Aug-24 | Target: >95</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 98.90639806839825, "label": "98.91"}, {"grey": null, "red": null, "yellow": null, "green": 98.9996229881415, "label": "99"}, {"grey": null, "red": null, "yellow": null, "green": 99.61239397017796, "label": "99.61"}, {"grey": null, "red": null, "yellow": null, "green": 99.66923942104256, "label": "99.67"}, {"grey": null, "red": null, "yellow": null, "green": 99.44357946640837, "label": "99.44"}, {"grey": null, "red": null, "yellow": null, "green": 99.6493477860446, "label": "99.65"}]' data-color="green" data-target='[95.0, 95.0, 95.0, 95.0, 95.0, 95.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>No Complaint  7 Days After Install (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 99%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.3%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            97.07 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 95.97206909475592, "label": "95.97", "green": null}, {"grey": null, "red": null, "yellow": 95.82368981348851, "label": "95.82", "green": null}, {"grey": null, "red": null, "yellow": 95.92443441295272, "label": "95.92", "green": null}, {"grey": null, "red": null, "yellow": 96.62071385757125, "label": "96.62", "green": null}, {"grey": null, "red": null, "yellow": 96.77627338995408, "label": "96.78", "green": null}, {"grey": null, "red": null, "yellow": 97.07445435601473, "label": "97.07", "green": null}]' data-color="yellow" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Fiber Poor Signal 3 Days After Install (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 120%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            0.29 
+            <span class="month"> Aug-24 | Target: <0.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 1.0003931400704036, "label": "1", "yellow": null, "green": null}, {"grey": null, "red": null, "yellow": 0.6905097419201377, "label": "0.69", "green": null}, {"grey": null, "red": null, "yellow": 0.5971158881500981, "label": "0.60", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 0.2976946235251296, "label": "0.30"}, {"grey": null, "red": null, "yellow": null, "green": 0.2887078504152722, "label": "0.29"}, {"grey": null, "red": null, "yellow": null, "green": 0.2871070118675816, "label": "0.29"}]' data-color="green" data-target='[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>WiFi Poor Signal 3 Days After Install (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 56%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM +15%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            0.90 
+            <span class="month"> Aug-24 | Target: <0.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 1.2922901867625431, "label": "1.29", "yellow": null, "green": null}, {"grey": null, "red": null, "yellow": 0.7819714823918457, "label": "0.78", "green": null}, {"grey": null, "red": null, "yellow": 0.7187146128713833, "label": "0.72", "green": null}, {"grey": null, "red": null, "yellow": 0.8202962848137136, "label": "0.82", "green": null}, {"grey": null, "red": null, "yellow": 0.78042687042524, "label": "0.78", "green": null}, {"grey": null, "red": null, "yellow": 0.8978617280052644, "label": "0.90", "green": null}]' data-color="yellow" data-target='[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    
+        <h2>Repair</h2>
+        <div class="dashboard" style="width: 990px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>On-time Repair (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 102%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.2%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            99.76 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 99.19, "label": "99.19"}, {"grey": null, "red": null, "yellow": null, "green": 99.43, "label": "99.43"}, {"grey": null, "red": null, "yellow": null, "green": 99.34, "label": "99.34"}, {"grey": null, "red": null, "yellow": null, "green": 98.66, "label": "98.66"}, {"grey": null, "red": null, "yellow": null, "green": 99.54, "label": "99.54"}, {"grey": null, "red": null, "yellow": null, "green": 99.76, "label": "99.76"}]' data-color="green" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Customer's Appointment Meet Preferred Date (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +1.4%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            96.32 
+            <span class="month"> Aug-24 | Target: >95</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 91.68082340449604, "label": "91.68", "green": null}, {"grey": null, "red": null, "yellow": 89.66028153388443, "label": "89.66", "green": null}, {"grey": null, "red": null, "yellow": 87.35139415876903, "label": "87.35", "green": null}, {"grey": null, "red": null, "yellow": 93.80434148637951, "label": "93.80", "green": null}, {"grey": null, "red": null, "yellow": 94.94612155924588, "label": "94.95", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 96.3151506185078, "label": "96.32"}]' data-color="green" data-target='[95.0, 95.0, 95.0, 95.0, 95.0, 95.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>24Hrs Fixed by Preferred Date (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            98.88 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 95.76, "label": "95.76", "green": null}, {"grey": null, "red": null, "yellow": 97.02, "label": "97.02", "green": null}, {"grey": null, "red": null, "yellow": 96.01, "label": "96.01", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 98.04, "label": "98.04"}, {"grey": null, "red": null, "yellow": null, "green": 98.84, "label": "98.84"}, {"grey": null, "red": null, "yellow": null, "green": 98.88, "label": "98.88"}]' data-color="green" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Preventive within SLA with No Complaint in 7 days (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.2%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            98.72 
+            <span class="month"> Aug-24 | Target: >98</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 97.81259579651858, "label": "97.81", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 98.21401688000908, "label": "98.21"}, {"grey": null, "red": null, "yellow": null, "green": 98.14903219359562, "label": "98.15"}, {"grey": null, "red": null, "yellow": null, "green": 98.63200537847771, "label": "98.63"}, {"grey": null, "red": null, "yellow": null, "green": 98.53016363316476, "label": "98.53"}, {"grey": null, "red": null, "yellow": null, "green": 98.72337034868, "label": "98.72"}]' data-color="green" data-target='[98.0, 98.0, 98.0, 98.0, 98.0, 98.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Fiber Poor Signal 3 Days After Repair (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 45%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM +8.8%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            1.11 
+            <span class="month"> Aug-24 | Target: <0.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 1.3228941601805904, "label": "1.32", "yellow": null, "green": null}, {"grey": null, "red": 1.3200326873852333, "label": "1.32", "yellow": null, "green": null}, {"grey": null, "red": 1.465351314655258, "label": "1.47", "yellow": null, "green": null}, {"grey": null, "red": 1.1904508147399837, "label": "1.19", "yellow": null, "green": null}, {"grey": null, "red": 1.0195456703836, "label": "1.02", "yellow": null, "green": null}, {"grey": null, "red": 1.107396352325, "label": "1.11", "yellow": null, "green": null}]' data-color="red" data-target='[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>WiFi Poor Signal 3 Days After Repair (%)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 29%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM -2.8%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            1.72 
+            <span class="month"> Aug-24 | Target: <0.50</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": 1.5114269744739903, "label": "1.51", "yellow": null, "green": null}, {"grey": null, "red": 1.5662103641602934, "label": "1.57", "yellow": null, "green": null}, {"grey": null, "red": 1.5766029365001453, "label": "1.58", "yellow": null, "green": null}, {"grey": null, "red": 1.76053192220619, "label": "1.76", "yellow": null, "green": null}, {"grey": null, "red": 1.76586065445877, "label": "1.77", "yellow": null, "green": null}, {"grey": null, "red": 1.7221127292924556, "label": "1.72", "yellow": null, "green": null}]' data-color="red" data-target='[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    <h1 id='link-touchpoint'>Customer Touchpoints</h1>
+        <h2>Call Center & Branded Shops</h2>
+        <div class="dashboard" style="width: 990px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Call Center CSAT (Top2Boxes)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM -0.1%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            97.20 
+            <span class="month"> Aug-24 | Target: >96</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 97.19, "label": "97.19"}, {"grey": null, "red": null, "yellow": null, "green": 97.08, "label": "97.08"}, {"grey": null, "red": null, "yellow": null, "green": 97.12, "label": "97.12"}, {"grey": null, "red": null, "yellow": null, "green": 97.02, "label": "97.02"}, {"grey": null, "red": null, "yellow": null, "green": 97.3, "label": "97.30"}, {"grey": null, "red": null, "yellow": null, "green": 97.2, "label": "97.20"}]' data-color="green" data-target='[96.0, 96.0, 96.0, 96.0, 96.0, 96.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>%Call Handling</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 93%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> MoM -5.6%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            85 
+            <span class="month"> Aug-24 | Target: >91</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 89.0, "label": "89", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 92.0, "label": "92"}, {"grey": null, "red": null, "yellow": null, "green": 92.0, "label": "92"}, {"grey": null, "red": null, "yellow": 89.0, "label": "89", "green": null}, {"grey": null, "red": null, "yellow": 90.0, "label": "90", "green": null}, {"grey": null, "red": null, "yellow": 85.0, "label": "85", "green": null}]' data-color="yellow" data-target='[90.0, 90.0, 90.0, 90.0, 91.0, 91.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>%First Call Resolution (FCR)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 99%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            82 
+            <span class="month"> Aug-24 | Target: >83</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 80.0, "label": "80"}, {"grey": null, "red": null, "yellow": 80.0, "label": "80", "green": null}, {"grey": null, "red": null, "yellow": 79.0, "label": "79", "green": null}, {"grey": null, "red": null, "yellow": 78.0, "label": "78", "green": null}, {"grey": null, "red": null, "yellow": 82.0, "label": "82", "green": null}, {"grey": null, "red": null, "yellow": 82.0, "label": "82", "green": null}]' data-color="yellow" data-target='[80.0, 83.0, 83.0, 83.0, 83.0, 83.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>%IVR & Chatbot Containment</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +0.5%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            86.95 
+            <span class="month"> Aug-24 | Target: >86</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 83.5, "label": "83.50", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 85.5, "label": "85.50"}, {"grey": null, "red": null, "yellow": 84.5, "label": "84.50", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 85.5, "label": "85.50"}, {"grey": null, "red": null, "yellow": null, "green": 86.5, "label": "86.50"}, {"grey": null, "red": null, "yellow": null, "green": 86.95, "label": "86.95"}]' data-color="green" data-target='[85.0, 85.5, 85.5, 85.5, 86.0, 86.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>%IVR Containment</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +1.1%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            79.90 
+            <span class="month"> Aug-24 | Target: >79</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 74.0, "label": "74", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 78.0, "label": "78"}, {"grey": null, "red": null, "yellow": 76.0, "label": "76", "green": null}, {"grey": null, "red": null, "yellow": 77.0, "label": "77", "green": null}, {"grey": null, "red": null, "yellow": null, "green": 79.0, "label": "79"}, {"grey": null, "red": null, "yellow": null, "green": 79.9, "label": "79.90"}]' data-color="green" data-target='[77.0, 78.0, 78.0, 78.0, 79.0, 79.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>%Chatbot Containment</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 101%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            94 
+            <span class="month"> Aug-24 | Target: >93</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 94.0, "label": "94"}, {"grey": null, "red": null, "yellow": null, "green": 94.0, "label": "94"}, {"grey": null, "red": null, "yellow": null, "green": 94.0, "label": "94"}]' data-color="green" data-target='[93.0, 93.0, 93.0, 93.0, 93.0, 93.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>True Branded Shop CSAT (Top2Boxes)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 105%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            95.94 
+            <span class="month"> Aug-24 | Target: >91</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 96.398, "label": "96.40"}, {"grey": null, "red": null, "yellow": null, "green": 96.873, "label": "96.87"}, {"grey": null, "red": null, "yellow": null, "green": 95.582, "label": "95.58"}, {"grey": null, "red": null, "yellow": null, "green": 95.986, "label": "95.99"}, {"grey": null, "red": null, "yellow": null, "green": 95.945, "label": "95.94"}, {"grey": null, "red": null, "yellow": null, "green": 95.945, "label": "95.94"}]' data-color="green" data-target='[91.0, 91.0, 91.0, 91.0, 91.0, 91.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Dtac Branded Shop CSAT (Top2Boxes)</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 102%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> MoM +0.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            93 
+            <span class="month"> Aug-24 | Target: >91</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 92.0, "label": "92"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}, {"grey": null, "red": null, "yellow": null, "green": 93.0, "label": "93"}]' data-color="green" data-target='[91.0, 91.0, 91.0, 91.0, 91.0, 91.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    
+        <h2>Digital App MAU</h2>
+        <div class="dashboard" style="width: 990px">
+            
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Digital App MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 91%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +5.6%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            17.94M 
+            <span class="month"> Aug-24 | Target: >19.68M</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 17227453.0, "label": "17.23M", "green": null}, {"grey": null, "red": null, "yellow": 17269423.0, "label": "17.27M", "green": null}, {"grey": null, "red": null, "yellow": 16684788.0, "label": "16.68M", "green": null}, {"grey": null, "red": null, "yellow": 16981610.0, "label": "16.98M", "green": null}, {"grey": null, "red": null, "yellow": 16981944.0, "label": "16.98M", "green": null}, {"grey": null, "red": null, "yellow": 17939035.0, "label": "17.94M", "green": null}]' data-color="yellow" data-target='[17367843.0, 17327123.0, 17824571.0, 18606485.0, 18565321.0, 19682019.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>DTAC App MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 95%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +1.3%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            6.82M 
+            <span class="month"> Jul-24 | Target: >7.21M</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 6582874.0, "label": "6.58M"}, {"grey": null, "red": null, "yellow": 6595923.0, "label": "6.60M", "green": null}, {"grey": null, "red": null, "yellow": 6808535.0, "label": "6.81M", "green": null}, {"grey": null, "red": null, "yellow": 6737479.0, "label": "6.74M", "green": null}, {"grey": null, "red": null, "yellow": 6822301.0, "label": "6.82M", "green": null}, {"grey": null, "red": null, "yellow": null, "green": null}]' data-color="yellow" data-target='[6235108.0, 6683035.0, 6970611.0, 7090768.0, 7213156.0, null]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>True iService MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 92%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +5.5%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            6.08M 
+            <span class="month"> Jul-24 | Target: >6.64M</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 5887578.0, "label": "5.89M", "green": null}, {"grey": null, "red": null, "yellow": 5720251.0, "label": "5.72M", "green": null}, {"grey": null, "red": null, "yellow": 5785923.0, "label": "5.79M", "green": null}, {"grey": null, "red": null, "yellow": 5765054.0, "label": "5.77M", "green": null}, {"grey": null, "red": null, "yellow": 6082141.0, "label": "6.08M", "green": null}, {"grey": null, "red": null, "yellow": null, "green": null}]' data-color="yellow" data-target='[5923230.0, 5729101.0, 6310714.0, 6241425.0, 6642625.0, null]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>TrueID App Registered MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 85%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +12%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            4.50M 
+            <span class="month"> Aug-24 | Target: >5.32M</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 4343072.0, "label": "4.34M", "green": null}, {"grey": null, "red": null, "yellow": 4311219.0, "label": "4.31M", "green": null}, {"grey": null, "red": null, "yellow": 3925660.0, "label": "3.93M", "green": null}, {"grey": null, "red": null, "yellow": 3911180.0, "label": "3.91M", "green": null}, {"grey": null, "red": null, "yellow": 4029536.0, "label": "4.03M", "green": null}, {"grey": null, "red": null, "yellow": 4503151.0, "label": "4.50M", "green": null}]' data-color="yellow" data-target='[4817294.0, 4734819.0, 4959430.0, 4853033.0, 4741793.0, 5315607.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>TrueX App MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> Ach 114%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +4.2%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            475.19K 
+            <span class="month"> Jul-24 | Target: >416.60K</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": null, "green": 388538.0, "label": "388.54K"}, {"grey": null, "red": null, "yellow": null, "green": 414544.0, "label": "414.54K"}, {"grey": null, "red": null, "yellow": null, "green": 435518.0, "label": "435.52K"}, {"grey": null, "red": null, "yellow": null, "green": 456164.0, "label": "456.16K"}, {"grey": null, "red": null, "yellow": null, "green": 475185.0, "label": "475.19K"}, {"grey": null, "red": null, "yellow": null, "green": null}]' data-color="green" data-target='[349876.0, 366556.0, 383236.0, 399916.0, 416596.0, null]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>Mordee App MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator red"> </div>
+                    <div> Ach 40%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +3.5%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            30.02K 
+            <span class="month"> Jul-24 | Target: >74.74K</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 25391.0, "label": "25.39K", "green": null}, {"grey": null, "red": 28736.0, "label": "28.74K", "yellow": null, "green": null}, {"grey": null, "red": 32398.0, "label": "32.40K", "yellow": null, "green": null}, {"grey": null, "red": 29009.0, "label": "29.01K", "yellow": null, "green": null}, {"grey": null, "red": 30019.0, "label": "30.02K", "yellow": null, "green": null}, {"grey": null, "red": null, "yellow": null, "green": null}]' data-color="red" data-target='[42335.0, 67410.0, 69769.0, 72211.0, 74739.0, null]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="card-header">
+            <h3>TrueID TV Box MAU</h3>
+            <div>
+                <div class="card-header-right">
+                    <div class="indicator yellow"> </div>
+                    <div> Ach 82%</div>
+                </div>
+                <div class="card-header-right">
+                    <div class="indicator green"> </div>
+                    <div> MoM +1.0%</div>
+                </div>
+            </div>
+        </div>
+        <p class="value">
+            1.33M 
+            <span class="month"> Aug-24 | Target: >1.62M</span>
+        </p>
+        <canvas class="chart" data-values='[{"grey": null, "red": null, "yellow": 1302197.0, "label": "1.30M", "green": null}, {"grey": null, "red": null, "yellow": 1315892.0, "label": "1.32M", "green": null}, {"grey": null, "red": null, "yellow": 1313336.0, "label": "1.31M", "green": null}, {"grey": null, "red": null, "yellow": 1313985.0, "label": "1.31M", "green": null}, {"grey": null, "red": null, "yellow": 1318210.0, "label": "1.32M", "green": null}, {"grey": null, "red": null, "yellow": 1331081.0, "label": "1.33M", "green": null}]' data-color="yellow" data-target='[1456267.0, 1488904.0, 1521541.0, 1554178.0, 1586815.0, 1619452.0]' data-labels='["Mar-24", "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24"]'></canvas>
+    </div>
+    
+        </div>
+    
+        </div>
+        <script>
+            const correctPassword = 'August30th';
+            const passwordInput = document.getElementById('password');
+            const content = document.getElementById('content');
+            const passwordForm = document.getElementById('password-form');
+            
+            passwordForm.style.display = 'block';
+            content.style.display = 'none';
+
+            passwordInput.addEventListener('input', function() {
+                if (this.value === correctPassword) {
+                    passwordForm.style.display = 'none';
+                    content.style.display = 'block';
+                }
+            });
+
+            Chart.register(ChartDataLabels);
+            document.querySelectorAll('.chart').forEach(function(canvas) {
+                var ctx = canvas.getContext('2d');
+                var data = JSON.parse(canvas.dataset.values);
+                var labels = JSON.parse(canvas.dataset.labels);
+                var targetData = JSON.parse(canvas.dataset.target);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Grey',
+                                data: data.map(d => d.grey),
+                                backgroundColor: 'rgba(158, 158, 158, 1)',
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'Red',
+                                data: data.map(d => d.red),
+                                backgroundColor: 'rgba(255, 130, 157, 1)',
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'Yellow',
+                                data: data.map(d => d.yellow),
+                                backgroundColor: 'rgba(255, 215, 120, 1)',
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'Green',
+                                data: data.map(d => d.green),
+                                backgroundColor: 'rgba(111, 205, 205, 1)',
+                                borderRadius: 5,
+                                borderWidth: 0
+                            },
+                            {
+                                label: 'Target',
+                                data: targetData,
+                                type: 'line',
+                                borderColor: 'rgba(77, 77, 77, 0.6)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                                spanGaps: true,
+                                datalabels: {
+                                    display: false
+                                },
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: true,
+                        scales: {
+                            x: { 
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                } 
+                            },
+                            y: { 
+                                stacked: true,
+                                display: false,
+                                grid: {
+                                    display: false
+                                } 
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: {
+                                color: '#333',
+                                anchor: 'end',
+                                align: 'bottom',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                formatter: function(value, context) {
+                                    if (value !== null && value !== 0) {
+                                        return data[context.dataIndex].label;
+                                    }
+                                    return null;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>
+    
